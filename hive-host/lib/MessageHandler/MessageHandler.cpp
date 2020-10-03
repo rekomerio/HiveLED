@@ -11,20 +11,22 @@ void MessageHandler::Handle(UDPMessage *message)
 
     LEDEffects &effect = effects[message->clientId];
 
+    if (effect.params.syncWithId == message->clientId)
+        effect.params.syncWithId = 255; // Cant sync with itself
+
     if (effect.params.syncWithId != 0xFF && effect.params.syncWithId < MAX_CLIENTS)
-    {
         Synchronize(effect.params, effects[effect.params.syncWithId].params);
-    }
 
     message->brightness = effect.params.brightness;
     message->requestNextFrameMs = effect.params.nextFrameMs;
 
     effect.Update(message->leds);
+    message->ComputeChecksum();
 }
 
-void MessageHandler::Synchronize(LEDParams &to, LEDParams &with)
+void MessageHandler::Synchronize(LEDParams &sync, LEDParams &with)
 {
-    to.palettePosition = with.palettePosition;
-    to.activeEffect = with.activeEffect;
-    to.brightness = with.brightness;
+    sync.palettePosition = with.palettePosition;
+    sync.activeEffect = with.activeEffect;
+    sync.brightness = with.brightness;
 }

@@ -8,7 +8,8 @@ typedef void (*Callback)(bool isConnected);
 class HiveClient
 {
 public:
-    enum {
+    enum
+    {
         NO_FRAME = -10,
         NO_CONNECTION,
         HOST_OVERLOAD
@@ -37,6 +38,7 @@ private:
 
     WiFiUDP UDP;
     UDPMessage m_Message;
+    //CRGB m_LedsBackup[LEDS_ARRAY_SIZE];
     uint32_t m_LastReceived;
     uint32_t m_LastSent;
 };

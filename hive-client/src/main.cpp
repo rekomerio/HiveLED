@@ -15,7 +15,7 @@ uint8_t statusLedState = 0;
 
 void onConnectionChanged(bool isConnected)
 {
-	Serial.println("connection changed");
+	Serial.println(isConnected ? "connected" : "disconnected");
 	digitalWrite(LED_BUILTIN, !isConnected);
 }
 

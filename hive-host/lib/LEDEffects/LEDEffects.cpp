@@ -19,7 +19,6 @@ void LEDEffects::Update(CRGB *leds)
     case 2:
         Sinelon();
         break;
-
     case 3:
         Rainbow();
         break;
@@ -50,8 +49,8 @@ void LEDEffects::Confetti()
 void LEDEffects::Sinelon()
 {
     fadeToBlackBy(leds, params.numLeds, 20);
-    int pos = beatsin16(13, 0, params.numLeds - 1);
-    leds[pos] += CHSV(params.hue, 255, 192);
+    int pos = beatsin16(13, 0, params.numLeds - 1) + params.paletteOffset;
+    leds[pos % params.numLeds] += CHSV(params.hue, 255, 192);
 }
 
 void LEDEffects::Rainbow()
@@ -67,7 +66,7 @@ void LEDEffects::Bpm()
     uint8_t beat = beatsin8(BeatsPerMinute, 64, 255);
     for (int i = 0; i < params.numLeds; i++)
     {
-        leds[i] = ColorFromPalette(palette, params.hue + (i * 2), beat - params.hue + (i * 10));
+        leds[i] = ColorFromPalette(palette, params.hue + (i * 2), beat - params.paletteOffset + (i * 10));
     }
 }
 

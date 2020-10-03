@@ -11,7 +11,7 @@ class MessageHandler
 public:
     MessageHandler();
     void Handle(UDPMessage *message);
-    void Synchronize(LEDParams &to, LEDParams &with);
+    void Synchronize(LEDParams &sync, LEDParams &with);
 
     std::array<LEDEffects, 16> effects;
 };

@@ -43,6 +43,11 @@ UDPMessage *Host::ReadMessage()
 
         if (nBytesRead)
         {
+            if (!m_MsgBuffer.ChecksumMatches())
+            {
+                Serial.println("checksum did not match");
+            }
+
             if (m_MsgBuffer.clientId < clients.size())
             {
                 clients[m_MsgBuffer.clientId].lastReceived = millis();

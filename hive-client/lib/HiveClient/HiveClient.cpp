@@ -73,11 +73,17 @@ int HiveClient::SendPing()
     if (ElapsedSinceLastSent() < 5)
         return HOST_OVERLOAD;
 
-    m_LastSent = millis();
+    m_Message.ComputeChecksum();
+
     if (UDP.beginPacket(hostAddress, HOST_PORT))
     {
         UDP.write((uint8_t *)&m_Message, sizeof(UDPMessage));
-        return UDP.endPacket();
+        uint8_t isSuccess = UDP.endPacket();
+
+        if (isSuccess)
+            m_LastSent = millis();
+
+        return isSuccess;
     }
     return 0;
 }

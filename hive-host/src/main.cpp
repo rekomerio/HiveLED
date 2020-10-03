@@ -4,7 +4,7 @@
 #include <FastLED.h>
 #include "Host.h"
 #include "HiveServer.h"
-#include "LEDHandler.h"
+#include "MessageHandler.h"
 #include "../../common/shared.h"
 
 void confetti(CRGB *leds, uint8_t clientId);
@@ -12,7 +12,7 @@ void sinelon(CRGB *leds);
 
 Host host;
 HiveServer *server;
-LEDHandler handler;
+MessageHandler messageHandler;
 
 void setup()
 {
@@ -26,7 +26,6 @@ void setup()
 	host.Init();
 	server = HiveServer::GetInstance();
 	server->Init();
-	handler.Init();
 }
 
 void loop()
@@ -34,24 +33,28 @@ void loop()
 	if (Serial.available())
 	{
 		String command = Serial.readString();
-		uint16_t value = strtoul((const char *)&command[1], NULL, 10);
+		uint8_t index = command[0] - '0';
+		uint16_t value = strtoul((const char *)&command[2], NULL, 10);
 
-		switch (command[0])
+		switch (command[1])
 		{
 		case 's':
-			handler.clients[0].spawnRate = value;
+			messageHandler.effects[index].params.syncWithId = value;
+			break;
+		case 'o':
+			messageHandler.effects[index].params.paletteOffset = value;
 			break;
 		case 'f':
-			handler.clients[0].spawnRate = max(value, (uint16_t)16);
+			messageHandler.effects[index].params.nextFrameMs = max(value, (uint16_t)16);
 			break;
 		case 'h':
-			handler.clients[0].hue = value;
+			messageHandler.effects[index].params.hue = value;
 			break;
 		case 'b':
-			handler.clients[0].brightness = value;
+			messageHandler.effects[index].params.brightness = value;
 			break;
 		case 'e':
-			handler.clients[0].activeEffect++;
+			messageHandler.effects[index].params.activeEffect++;
 			break;
 		}
 	}
@@ -59,7 +62,7 @@ void loop()
 	UDPMessage *message = host.ReadMessage();
 	if (message)
 	{
-		handler.Handle(message);
+		messageHandler.Handle(message);
 		host.RespondToClient(message);
 	}
 

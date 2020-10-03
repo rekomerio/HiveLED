@@ -6,7 +6,6 @@
 
 struct UDPMessage
 {
-    uint16_t nLeds;
     uint8_t clientId;
     uint8_t brightness;
     uint8_t requestNextFrameMs;

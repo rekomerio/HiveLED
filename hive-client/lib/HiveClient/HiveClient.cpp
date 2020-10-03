@@ -44,13 +44,23 @@ UDPMessage *HiveClient::ReadMessage()
 
 bool HiveClient::IsNextFrameAvailable()
 {
-    return (uint32_t)(millis() - m_LastSent) > m_Message.requestNextFrameMs;
+    return ElapsedSinceLastReceived() > m_Message.requestNextFrameMs;
+}
+
+uint32_t HiveClient::ElapsedSinceLastReceived()
+{
+    return (uint32_t)(millis() - m_LastReceived);
+}
+
+uint32_t HiveClient::ElapsedSinceLastSent()
+{
+    return (uint32_t)(millis() - m_LastSent);
 }
 
 int HiveClient::RequestFrame()
 {
     if (!IsNextFrameAvailable())
-        return -1;
+        return NO_FRAME;
 
     return SendPing();
 }
@@ -58,7 +68,10 @@ int HiveClient::RequestFrame()
 int HiveClient::SendPing()
 {
     if (!isConnected)
-        return -1;
+        return NO_CONNECTION;
+
+    if (ElapsedSinceLastSent() < 5)
+        return HOST_OVERLOAD;
 
     m_LastSent = millis();
     if (UDP.beginPacket(hostAddress, HOST_PORT))
@@ -79,15 +92,9 @@ void HiveClient::TestConnection()
 {
     bool hasConnection = WiFi.status() == WL_CONNECTED;
 
-    if (hasConnection && !isConnected)
+    if (hasConnection != isConnected)
     {
-        isConnected = true;
-        OnConnectionChanged();
-    }
-
-    if (!hasConnection && isConnected)
-    {
-        isConnected = false;
+        isConnected = hasConnection;
         OnConnectionChanged();
     }
 }

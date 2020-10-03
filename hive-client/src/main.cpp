@@ -5,7 +5,7 @@
 #include "../../common/shared.h"
 #include "../../hive-client/lib/HiveClient/HiveClient.h"
 
-#define NETWORK_ID 0
+#define NETWORK_ID 1
 #define DATA_PIN 12 // D6 for Wemos D1 mini
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB

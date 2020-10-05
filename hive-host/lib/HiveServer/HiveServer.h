@@ -1,4 +1,5 @@
 #include <WebSocketsServer.h>
+#include "MessageHandler.h"
 
 class HiveServer
 {
@@ -6,6 +7,7 @@ public:
     static HiveServer *GetInstance();
     void Init();
     void Update();
+    MessageHandler *handler;
 
 private:
     HiveServer();

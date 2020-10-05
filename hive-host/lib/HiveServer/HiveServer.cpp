@@ -2,6 +2,7 @@
 
 HiveServer::HiveServer() : ws(WebSocketsServer(81))
 {
+    handler = nullptr;
 }
 
 void HiveServer::Init()
@@ -38,6 +39,10 @@ void HiveServer::OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *pa
     break;
     case WStype_TEXT:
         Serial.printf("[%u] get Text: %s\n", connection, payload);
+
+        if (handler)
+            for (auto &effect : handler->effects)
+                effect.params.activeEffect++;
     }
 }
 

@@ -1,10 +1,10 @@
-#include "LEDEffects.h"
+#include "LEDEffect.h"
 
-LEDEffects::LEDEffects()
+LEDEffect::LEDEffect()
 {
 }
 
-void LEDEffects::Update(CRGB *leds)
+void LEDEffect::Update(CRGB *leds)
 {
     this->leds = leds;
 
@@ -34,7 +34,7 @@ void LEDEffects::Update(CRGB *leds)
     }
 }
 
-void LEDEffects::Confetti()
+void LEDEffect::Confetti()
 {
 
     if (millis() - params.lastUpdate > params.spawnRate)
@@ -46,19 +46,19 @@ void LEDEffects::Confetti()
     fadeToBlackBy(leds, params.numLeds, 5);
 }
 
-void LEDEffects::Sinelon()
+void LEDEffect::Sinelon()
 {
     fadeToBlackBy(leds, params.numLeds, 20);
     int pos = beatsin16(13, 0, params.numLeds - 1) + params.paletteOffset;
     leds[pos % params.numLeds] += CHSV(params.hue, 255, 192);
 }
 
-void LEDEffects::Rainbow()
+void LEDEffect::Rainbow()
 {
     fill_rainbow(leds, params.numLeds, params.hue, 7);
 }
 
-void LEDEffects::Bpm()
+void LEDEffect::Bpm()
 {
     // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
     uint8_t BeatsPerMinute = 62;
@@ -70,7 +70,7 @@ void LEDEffects::Bpm()
     }
 }
 
-void LEDEffects::Juggle()
+void LEDEffect::Juggle()
 {
     // eight colored dots, weaving in and out of sync with each other
     fadeToBlackBy(leds, params.numLeds, 20);
@@ -82,7 +82,7 @@ void LEDEffects::Juggle()
     }
 }
 
-void LEDEffects::ColorPalette()
+void LEDEffect::ColorPalette()
 {
     for (uint16_t i = 0; i < params.numLeds; i++)
     {

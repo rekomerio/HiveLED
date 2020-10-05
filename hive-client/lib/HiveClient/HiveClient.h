@@ -3,6 +3,9 @@
 #include "../../../common/defines.h"
 #include "../../../common/Message.h"
 
+#ifndef HIVECLIENT_H
+#define HIVECLIENT_H
+
 typedef void (*Callback)(bool isConnected);
 
 class HiveClient
@@ -18,13 +21,15 @@ public:
     HiveClient(uint8_t id);
 
     void Init();
-    UDPMessage &GetMessage();
+    CRGB *GetLeds();
     UDPMessage *ReadMessage();
     int RequestFrame();
+    int SendPing();
     void TestConnection();
     bool IsNextFrameAvailable();
     uint32_t ElapsedSinceLastReceived();
     uint32_t ElapsedSinceLastSent();
+    int KeepAlive();
 
     bool isConnected;
     uint8_t id;
@@ -33,12 +38,12 @@ public:
     Callback onConnectionChanged;
 
 private:
-    int SendPing();
     void OnConnectionChanged();
 
     WiFiUDP UDP;
     UDPMessage m_Message;
-    //CRGB m_LedsBackup[LEDS_ARRAY_SIZE];
     uint32_t m_LastReceived;
     uint32_t m_LastSent;
 };
+
+#endif

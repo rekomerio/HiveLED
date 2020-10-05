@@ -1,4 +1,3 @@
-#include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <array>
 #include "../../../common/defines.h"
@@ -23,11 +22,12 @@ public:
     int SendMessage(UDPMessage *message, UDPClient &client);
     int RespondToClient(UDPMessage *message);
     UDPMessage *ReadMessage();
+    UDPMessage *PeekMessage();
 
     std::array<UDPClient, MAX_CLIENTS> clients;
 
 private:
     UDPClient *m_LastClient;
-    UDPMessage m_MsgBuffer;
+    std::array<UDPMessage, MAX_CLIENTS> m_MsgBuffer;
     WiFiUDP UDP;
 };

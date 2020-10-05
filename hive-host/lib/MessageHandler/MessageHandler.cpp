@@ -9,7 +9,7 @@ void MessageHandler::Handle(UDPMessage *message)
     if (message->clientId > effects.size())
         return;
 
-    LEDEffects &effect = effects[message->clientId];
+    LEDEffect &effect = effects[message->clientId];
 
     if (effect.params.syncWithId == message->clientId)
         effect.params.syncWithId = 255; // Cant sync with itself
@@ -21,7 +21,6 @@ void MessageHandler::Handle(UDPMessage *message)
     message->requestNextFrameMs = effect.params.nextFrameMs;
 
     effect.Update(message->leds);
-    message->ComputeChecksum();
 }
 
 void MessageHandler::Synchronize(LEDParams &sync, LEDParams &with)

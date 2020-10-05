@@ -1,7 +1,7 @@
 #include <FastLED.h>
 
-#ifndef LEDEFFECTS
-#define LEDEFFECTS
+#ifndef LEDEFFECT_H
+#define LEDEFFECT_H
 
 struct LEDParams
 {
@@ -17,10 +17,10 @@ struct LEDParams
     uint32_t lastUpdate = 0;
 };
 
-class LEDEffects
+class LEDEffect
 {
 public:
-    LEDEffects();
+    LEDEffect();
     void Update(CRGB *leds);
     LEDParams params;
 

@@ -7,10 +7,13 @@ Host::Host()
 
 void Host::Init()
 {
+    for (uint8_t i = 0; i < m_MsgBuffer.size(); i++)
+        m_MsgBuffer[i].clientId = i;
+
     while (!UDP.begin(HOST_PORT))
     {
         Serial.println("UDP setup unsuccessful");
-        delay(100);
+        delay(250);
     }
 
     Serial.println("UDP setup successful");
@@ -31,6 +34,7 @@ int Host::RespondToClient(UDPMessage *message)
 {
     if (!m_LastClient)
         return -1;
+
     return Host::SendMessage(message, *m_LastClient);
 }
 
@@ -39,28 +43,37 @@ UDPMessage *Host::ReadMessage()
     uint8_t packetSize = UDP.parsePacket();
     if (packetSize)
     {
-        uint16_t nBytesRead = UDP.read((uint8_t *)&m_MsgBuffer, sizeof(UDPMessage));
+        IPAddress ip = UDP.remoteIP();
+        uint8_t clientId;
+        uint16_t nBytesRead = UDP.read(&clientId, 1);
 
         if (nBytesRead)
         {
-            if (!m_MsgBuffer.ChecksumMatches())
+            if (clientId < clients.size())
             {
-                Serial.println("checksum did not match");
-            }
+                Serial.printf("Message received from %d, elapsed: %d\n", clientId, millis() - clients[clientId].lastReceived);
 
-            if (m_MsgBuffer.clientId < clients.size())
-            {
-                clients[m_MsgBuffer.clientId].lastReceived = millis();
-                clients[m_MsgBuffer.clientId].ip = UDP.remoteIP();
-                m_LastClient = &clients[m_MsgBuffer.clientId];
+                clients[clientId].lastReceived = millis();
+                clients[clientId].ip = ip;
+                m_LastClient = &clients[clientId];
+                return &m_MsgBuffer[clientId];
             }
             else
             {
                 Serial.println("Invalid id");
                 m_LastClient = nullptr;
             }
-            return &m_MsgBuffer;
         }
+    }
+    return nullptr;
+}
+
+UDPMessage *Host::PeekMessage()
+{
+    for (uint8_t i = 0; i < m_MsgBuffer.size(); i++)
+    {
+        if (clients[i].IsConnected() && (uint32_t)(millis() - clients[i].lastSent) > m_MsgBuffer[i].requestNextFrameMs)
+            return &m_MsgBuffer[i];
     }
     return nullptr;
 }

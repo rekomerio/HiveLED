@@ -7,25 +7,36 @@
 #include "MessageHandler.h"
 #include "../../common/shared.h"
 
-void confetti(CRGB *leds, uint8_t clientId);
-void sinelon(CRGB *leds);
-
 Host host;
 HiveServer *server;
 MessageHandler messageHandler;
 
+const char *sssid = "Redmi";
+const char *passw = "1b18a7431459";
+
 void setup()
 {
 	Serial.begin(115200);
-	WiFi.mode(WIFI_AP);
-	WiFi.softAP(ssid, pass);
+	WiFi.mode(WIFI_AP_STA);
+	WiFi.begin(sssid, passw);
 
-	IPAddress myIP = WiFi.softAPIP();
-	Serial.println(myIP);
+	Serial.println(WiFi.softAPIP());
+
+	while (WiFi.status() != WL_CONNECTED)
+	{
+		delay(250);
+		Serial.print('.');
+	}
+
+	WiFi.softAP(ssid, pass, 1, 0, MAX_CLIENTS);
+
+	Serial.println(WiFi.softAPIP());
+	Serial.println(WiFi.localIP());
 
 	host.Init();
 	server = HiveServer::GetInstance();
 	server->Init();
+	server->handler = &messageHandler;
 }
 
 void loop()
@@ -59,11 +70,13 @@ void loop()
 		}
 	}
 
-	UDPMessage *message = host.ReadMessage();
+	host.ReadMessage();
+	UDPMessage *message = host.PeekMessage();
 	if (message)
 	{
 		messageHandler.Handle(message);
-		host.RespondToClient(message);
+		//host.RespondToClient(message);
+		host.SendMessage(message, host.clients[message->clientId]);
 	}
 
 	server->Update();

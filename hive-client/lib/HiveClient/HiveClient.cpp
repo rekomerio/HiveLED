@@ -4,15 +4,15 @@ HiveClient::HiveClient(uint8_t id)
 {
     hostAddress = IPAddress(192, 168, 4, 1);
     isConnected = false;
-    m_Message.clientId = id;
+    onConnectionChanged = nullptr;
+    this->id = id;
     m_LastReceived = 0;
     m_LastSent = 0;
-    onConnectionChanged = nullptr;
 }
 
 void HiveClient::Init()
 {
-    fill_solid(m_Message.leds, LEDS_ARRAY_SIZE, CRGB::BlueViolet);
+    fill_solid(GetLeds(), LEDS_ARRAY_SIZE, CRGB::BlueViolet);
     // Start listening to this port for incoming messages
     while (!UDP.begin(CLIENT_PORT))
     {
@@ -23,21 +23,23 @@ void HiveClient::Init()
     Serial.println("UDP setup successful");
 }
 
-UDPMessage &HiveClient::GetMessage()
+CRGB *HiveClient::GetLeds()
 {
-    return m_Message;
+    return m_Message.leds;
 }
 
 UDPMessage *HiveClient::ReadMessage()
 {
-    uint8_t packetSize = UDP.parsePacket();
-
-    if (packetSize)
+    if (UDP.parsePacket())
     {
-        m_LastReceived = millis();
-
         if (UDP.read((uint8_t *)&m_Message, sizeof(UDPMessage)))
-            return &m_Message;
+        {
+            if (m_Message.clientId == id)
+            {
+                m_LastReceived = millis();
+                return &m_Message;
+            }
+        }
     }
     return nullptr;
 }
@@ -65,6 +67,14 @@ int HiveClient::RequestFrame()
     return SendPing();
 }
 
+int HiveClient::KeepAlive()
+{
+    if (ElapsedSinceLastSent() < 100)
+        return 0;
+
+    return SendPing();
+}
+
 int HiveClient::SendPing()
 {
     if (!isConnected)
@@ -73,11 +83,9 @@ int HiveClient::SendPing()
     if (ElapsedSinceLastSent() < 5)
         return HOST_OVERLOAD;
 
-    m_Message.ComputeChecksum();
-
     if (UDP.beginPacket(hostAddress, HOST_PORT))
     {
-        UDP.write((uint8_t *)&m_Message, sizeof(UDPMessage));
+        UDP.write(&id, 1);
         uint8_t isSuccess = UDP.endPacket();
 
         if (isSuccess)

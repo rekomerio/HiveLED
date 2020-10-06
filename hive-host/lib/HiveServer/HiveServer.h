@@ -7,6 +7,7 @@ public:
     static HiveServer *GetInstance();
     void Init();
     void Update();
+    void HandleWSRoute();
     MessageHandler *handler;
 
 private:

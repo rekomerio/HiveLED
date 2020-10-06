@@ -1,64 +1,33 @@
 #include "LEDEffect.h"
 
-LEDEffect::LEDEffect()
+LEDEffect::LEDEffect(uint8_t index)
 {
+    m_Index = index;
 }
 
-void LEDEffect::Update(CRGB *leds)
-{
-    this->leds = leds;
-
-    switch (params.activeEffect)
-    {
-    case 0:
-        ColorPalette();
-        break;
-    case 1:
-        Confetti();
-        break;
-    case 2:
-        Sinelon();
-        break;
-    case 3:
-        Rainbow();
-        break;
-    case 4:
-        Bpm();
-        break;
-    case 5:
-        Juggle();
-        break;
-    default:
-        params.activeEffect = 0;
-        break;
-    }
-}
-
-void LEDEffect::Confetti()
-{
-
-    if (millis() - params.lastUpdate > params.spawnRate)
-    {
-        leds[random16(params.numLeds)] += CHSV(params.hue + random8(64), 200, 255);
-        params.lastUpdate = millis();
-    }
-
-    fadeToBlackBy(leds, params.numLeds, 5);
-}
-
-void LEDEffect::Sinelon()
+void Sinelon::Update(CRGB *leds, LEDParams &params)
 {
     fadeToBlackBy(leds, params.numLeds, 20);
     int pos = beatsin16(13, 0, params.numLeds - 1) + params.paletteOffset;
     leds[pos % params.numLeds] += CHSV(params.hue, 255, 192);
 }
 
-void LEDEffect::Rainbow()
+const char *Sinelon::GetParams()
+{
+    return "none";
+}
+
+void Rainbow::Update(CRGB *leds, LEDParams &params)
 {
     fill_rainbow(leds, params.numLeds, params.hue, 7);
 }
 
-void LEDEffect::Bpm()
+const char *Rainbow::GetParams()
+{
+    return "none";
+}
+
+void Bpm::Update(CRGB *leds, LEDParams &params)
 {
     // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
     uint8_t BeatsPerMinute = 62;
@@ -70,7 +39,12 @@ void LEDEffect::Bpm()
     }
 }
 
-void LEDEffect::Juggle()
+const char *Bpm::GetParams()
+{
+    return "none";
+}
+
+void Juggle::Update(CRGB *leds, LEDParams &params)
 {
     // eight colored dots, weaving in and out of sync with each other
     fadeToBlackBy(leds, params.numLeds, 20);
@@ -82,7 +56,12 @@ void LEDEffect::Juggle()
     }
 }
 
-void LEDEffect::ColorPalette()
+const char *Juggle::GetParams()
+{
+    return "none";
+}
+
+void ColorPalette::Update(CRGB *leds, LEDParams &params)
 {
     for (uint16_t i = 0; i < params.numLeds; i++)
     {
@@ -90,4 +69,25 @@ void LEDEffect::ColorPalette()
     }
 
     params.palettePosition++;
+}
+
+const char *ColorPalette::GetParams()
+{
+    return "none";
+}
+
+void Confetti::Update(CRGB *leds, LEDParams &params)
+{
+    if (millis() - params.lastUpdate > params.spawnRate)
+    {
+        leds[random16(params.numLeds)] += CHSV(params.hue + random8(64), 200, 255);
+        params.lastUpdate = millis();
+    }
+
+    fadeToBlackBy(leds, params.numLeds, 5);
+}
+
+const char *Confetti::GetParams()
+{
+    return "none";
 }

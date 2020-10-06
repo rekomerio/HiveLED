@@ -24,7 +24,7 @@ void setup()
 	Serial.begin(115200);
 	pinMode(LED_BUILTIN, OUTPUT);
 
-	FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(client.GetLeds(), LEDS_ARRAY_SIZE).setCorrection(TypicalLEDStrip);
+	FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(client.GetLeds(), MAX_LEDS).setCorrection(TypicalLEDStrip);
 
 	WiFi.begin(ssid, pass);
 	WiFi.mode(WIFI_STA);

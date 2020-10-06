@@ -3,4 +3,4 @@
 #define PING_INTERVAL 1000
 #define MAX_CLIENTS 8
 
-#define LEDS_ARRAY_SIZE 100
+#define MAX_LEDS 100

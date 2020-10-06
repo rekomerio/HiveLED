@@ -9,7 +9,7 @@ struct UDPMessage
     uint8_t clientId;
     uint8_t brightness;
     uint8_t requestNextFrameMs;
-    CRGB leds[LEDS_ARRAY_SIZE];
+    CRGB leds[MAX_LEDS];
 };
 
 #endif

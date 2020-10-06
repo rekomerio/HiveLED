@@ -4,23 +4,36 @@ MessageHandler::MessageHandler()
 {
 }
 
+void MessageHandler::Init()
+{
+    uint8_t i = 0;
+    effects.push_back(new Confetti(i++));
+    effects.push_back(new Rainbow(i++));
+    effects.push_back(new Sinelon(i++));
+    effects.push_back(new Bpm(i++));
+    effects.push_back(new Juggle(i++));
+    effects.push_back(new ColorPalette(i++));
+}
+
 void MessageHandler::Handle(UDPMessage *message)
 {
-    if (message->clientId > effects.size())
+    if (message->clientId > params.size())
         return;
 
-    LEDEffect &effect = effects[message->clientId];
+    LEDParams &param = params[message->clientId];
 
-    if (effect.params.syncWithId == message->clientId)
-        effect.params.syncWithId = 255; // Cant sync with itself
+    if (param.syncWithId == message->clientId)
+        param.syncWithId = 255; // Cant sync with itself
 
-    if (effect.params.syncWithId != 0xFF && effect.params.syncWithId < MAX_CLIENTS)
-        Synchronize(effect.params, effects[effect.params.syncWithId].params);
+    if (param.syncWithId != 0xFF && param.syncWithId < MAX_CLIENTS)
+        Synchronize(param, params[param.syncWithId]);
 
-    message->brightness = effect.params.brightness;
-    message->requestNextFrameMs = effect.params.nextFrameMs;
+    message->brightness = param.brightness;
+    message->requestNextFrameMs = param.nextFrameMs;
 
-    effect.Update(message->leds);
+    param.activeEffect %= effects.size();
+
+    effects[param.activeEffect]->Update(message->leds, param);
 }
 
 void MessageHandler::Synchronize(LEDParams &sync, LEDParams &with)
@@ -28,4 +41,9 @@ void MessageHandler::Synchronize(LEDParams &sync, LEDParams &with)
     sync.palettePosition = with.palettePosition;
     sync.activeEffect = with.activeEffect;
     sync.brightness = with.brightness;
+}
+
+LEDParams *MessageHandler::GetParams(uint8_t clientId)
+{
+    return &params[clientId];
 }

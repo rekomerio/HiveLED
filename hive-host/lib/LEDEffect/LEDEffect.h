@@ -17,22 +17,45 @@ struct LEDParams
     uint32_t lastUpdate = 0;
 };
 
+enum Effect
+{
+    CONFETTI,
+    RAINBOW,
+    SINELON,
+    BPM,
+    JUGGLE,
+    COLORPALETTE
+};
+
 class LEDEffect
 {
 public:
-    LEDEffect();
-    void Update(CRGB *leds);
-    LEDParams params;
+    LEDEffect(uint8_t index);
+    virtual void Update(CRGB *leds, LEDParams &params) = 0;
+    virtual const char *GetName() { return ""; };
+    virtual const uint8_t GetIndex() { return m_Index; };
+    virtual const char *GetParams() = 0;
 
-private:
-    void Confetti();
-    void Rainbow();
-    void Sinelon();
-    void Bpm();
-    void Juggle();
-    void ColorPalette();
-
-    CRGB *leds;
+protected:
+    uint8_t m_Index;
 };
+
+#define DEFINE_EFFECT(CLASSNAME, NAME)                       \
+    class CLASSNAME : public LEDEffect                       \
+    {                                                        \
+        using LEDEffect::LEDEffect;                          \
+                                                             \
+    public:                                                  \
+        void Update(CRGB *leds, LEDParams &params) override; \
+        const char *GetName() override { return NAME; }      \
+        const char *GetParams() override;                    \
+    }
+
+DEFINE_EFFECT(Confetti, "Confetti");
+DEFINE_EFFECT(Rainbow, "Rainbow");
+DEFINE_EFFECT(Sinelon, "Sinelon");
+DEFINE_EFFECT(Bpm, "Bpm");
+DEFINE_EFFECT(Juggle, "Juggle");
+DEFINE_EFFECT(ColorPalette, "Color palette");
 
 #endif

@@ -12,7 +12,7 @@ HiveClient::HiveClient(uint8_t id)
 
 void HiveClient::Init()
 {
-    fill_solid(GetLeds(), LEDS_ARRAY_SIZE, CRGB::BlueViolet);
+    fill_solid(GetLeds(), MAX_LEDS, CRGB::BlueViolet);
     // Start listening to this port for incoming messages
     while (!UDP.begin(CLIENT_PORT))
     {

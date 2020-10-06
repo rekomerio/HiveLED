@@ -39,10 +39,60 @@ void HiveServer::OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *pa
     break;
     case WStype_TEXT:
         Serial.printf("[%u] get Text: %s\n", connection, payload);
+        if (strcmp(reinterpret_cast<const char *>(payload), "status") == 0)
+        {
+            ws.sendTXT(connection, "Status is good");
+        }
+        break;
+    case WStype_BIN:
 
-        if (handler)
-            for (auto &effect : handler->effects)
-                effect.params.activeEffect++;
+        for (size_t i = 0; i < length; i++)
+        {
+            Serial.println(payload[i]);
+        }
+
+        if (length < 6)
+        {
+            Serial.println("Message is too short");
+            ws.sendTXT(connection, "Message is too short");
+            return;
+        }
+
+        if (length > 6)
+        {
+            Serial.println("Message is too long");
+            ws.sendTXT(connection, "Message is too long");
+            return;
+        }
+
+        uint8_t clientId = payload[0];
+        uint8_t command = payload[1];
+        uint32_t value = payload[5] << 24 | payload[4] << 16 | payload[3] << 8 | payload[2];
+
+        Serial.printf("client %d\n", clientId);
+        Serial.printf("command %d\n", command);
+        Serial.printf("value %d\n", value);
+
+        if (!handler)
+            return;
+
+        if (clientId >= MAX_CLIENTS)
+            return;
+
+        switch (command)
+        {
+        case 0:
+            handler->GetParams(clientId)->activeEffect = (uint8_t)value;
+            break;
+
+        default:
+            break;
+        }
+        // TODO: Messaging protocol
+        // Required info: client id - 1 byte
+        // Param to edit number - 1 byte
+        // Param value - 4 bytes
+        break;
     }
 }
 

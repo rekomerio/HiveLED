@@ -1,5 +1,6 @@
 #include <FastLED.h>
 #include <array>
+#include <vector>
 #include "../../../common/Message.h"
 #include "../LEDEffect/LEDEffect.h"
 
@@ -10,11 +11,13 @@ class MessageHandler
 {
 public:
     MessageHandler();
+    void Init();
     void Handle(UDPMessage *message);
     void Synchronize(LEDParams &sync, LEDParams &with);
-    LEDParams *GetParams();
+    LEDParams *GetParams(uint8_t clientId);
 
-    std::array<LEDEffect, 16> effects;
+    std::vector<LEDEffect *> effects;
+    std::array<LEDParams, MAX_CLIENTS> params;
 };
 
 #endif

@@ -3,6 +3,7 @@
 Host::Host()
 {
     m_LastClient = nullptr;
+    m_NextMessageIndex = 0;
 }
 
 void Host::Init()
@@ -51,7 +52,7 @@ UDPMessage *Host::ReadMessage()
         {
             if (clientId < clients.size())
             {
-                Serial.printf("Message received from %d, elapsed: %d\n", clientId, millis() - clients[clientId].lastReceived);
+                //Serial.printf("Message received from %d, elapsed: %d\n", clientId, millis() - clients[clientId].lastReceived);
 
                 clients[clientId].lastReceived = millis();
                 clients[clientId].ip = ip;
@@ -70,10 +71,11 @@ UDPMessage *Host::ReadMessage()
 
 UDPMessage *Host::PeekMessage()
 {
-    for (uint8_t i = 0; i < m_MsgBuffer.size(); i++)
-    {
-        if (clients[i].IsConnected() && (uint32_t)(millis() - clients[i].lastSent) > m_MsgBuffer[i].requestNextFrameMs)
-            return &m_MsgBuffer[i];
-    }
+    uint8_t &i = m_NextMessageIndex;
+    ++i %= clients.size();
+
+    if (clients[i].IsConnected() && (uint32_t)(millis() - clients[i].lastSent) > m_MsgBuffer[i].requestNextFrameMs)
+        return &m_MsgBuffer[i];
+
     return nullptr;
 }

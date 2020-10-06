@@ -34,13 +34,15 @@ void setup()
 	Serial.println(WiFi.localIP());
 
 	host.Init();
+	messageHandler.Init();
 	server = HiveServer::GetInstance();
-	server->Init();
 	server->handler = &messageHandler;
+	server->Init();
 }
 
 void loop()
 {
+
 	if (Serial.available())
 	{
 		String command = Serial.readString();
@@ -50,32 +52,32 @@ void loop()
 		switch (command[1])
 		{
 		case 's':
-			messageHandler.effects[index].params.syncWithId = value;
+			messageHandler.GetParams(index)->syncWithId = value;
 			break;
 		case 'o':
-			messageHandler.effects[index].params.paletteOffset = value;
+			messageHandler.GetParams(index)->paletteOffset = value;
 			break;
 		case 'f':
-			messageHandler.effects[index].params.nextFrameMs = max(value, (uint16_t)16);
+			messageHandler.GetParams(index)->nextFrameMs = max(value, (uint16_t)16);
 			break;
 		case 'h':
-			messageHandler.effects[index].params.hue = value;
+			messageHandler.GetParams(index)->hue = value;
 			break;
 		case 'b':
-			messageHandler.effects[index].params.brightness = value;
+			messageHandler.GetParams(index)->brightness = value;
 			break;
 		case 'e':
-			messageHandler.effects[index].params.activeEffect++;
+			messageHandler.GetParams(index)->activeEffect++;
 			break;
 		}
 	}
 
 	host.ReadMessage();
 	UDPMessage *message = host.PeekMessage();
+
 	if (message)
 	{
 		messageHandler.Handle(message);
-		//host.RespondToClient(message);
 		host.SendMessage(message, host.clients[message->clientId]);
 	}
 

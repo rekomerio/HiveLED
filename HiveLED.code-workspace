@@ -1,15 +1,18 @@
 {
     "folders": [
-		{
-			"path": "hive-host"
-		},
-		{
-			"path": "hive-client"
-		},
-		{
-			"path": "common"
-		}
-	],
+        {
+            "path": "hive-host"
+        },
+        {
+            "path": "hive-client"
+        },
+        {
+            "path": "common"
+        },
+        {
+            "path": "hive-ui"
+        }
+    ],
     "settings": {
         "files.associations": {
             "system_error": "cpp",

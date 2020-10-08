@@ -65,34 +65,64 @@ void HiveServer::OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *pa
             return;
         }
 
-        uint8_t clientId = payload[0];
-        uint8_t command = payload[1];
-        uint32_t value = payload[5] << 24 | payload[4] << 16 | payload[3] << 8 | payload[2];
+        HandleBinaryMessage(connection, payload, length);
+    }
+}
 
-        Serial.printf("client %d\n", clientId);
-        Serial.printf("command %d\n", command);
-        Serial.printf("value %d\n", value);
+void HiveServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_t length)
+{
+    uint8_t command = payload[0];
+    uint8_t clientId = payload[1];
+    uint8_t param = payload[2];
+    uint16_t value = payload[4] << 8 | payload[3];
 
-        if (!handler)
-            return;
+    Serial.printf("command %d\n", command);
+    Serial.printf("client %d\n", clientId);
+    Serial.printf("param %d\n", param);
+    Serial.printf("value %d\n", value);
 
-        if (clientId >= MAX_CLIENTS)
-            return;
+    if (!handler)
+        return;
 
-        switch (command)
-        {
-        case 0:
-            handler->GetParams(clientId)->activeEffect = (uint8_t)value;
-            break;
+    if (clientId >= MAX_CLIENTS)
+        return;
 
-        default:
-            break;
-        }
-        // TODO: Messaging protocol
-        // Required info: client id - 1 byte
-        // Param to edit number - 1 byte
-        // Param value - 4 bytes
+    char msg[64];
+
+    switch (command)
+    {
+    case Command::SET_PARAM_VALUE:
+        handler->SetParam(clientId, (Param)param, value);
         break;
+    case Command::GET_PARAM_VALUE:
+        ws.sendBIN(connection, (uint8_t *)&handler->GetParam(clientId, (Param)param), 2);
+        break;
+    case Command::GET_PARAM_NAME:
+        break;
+    case Command::GET_EFFECT_NAME:
+    {
+        const char *name = handler->effects[param % handler->effects.size()]->GetName();
+        strcpy(msg, name);
+        uint8_t index = handler->effects[param % handler->effects.size()]->GetIndex();
+        msg[strlen(name)] = ';';
+        strcpy(&msg[strlen(name) + 1], String(index).c_str());
+        ws.sendTXT(connection, msg);
+        break;
+    }
+    case Command::GET_CLIENT_STATUS:
+        break;
+    case Command::GET_NUM_PARAMS:
+    {
+        uint8_t nParams = LEDParams::GetNumParams();
+        ws.sendBIN(connection, &nParams, 1);
+        break;
+    }
+    case Command::GET_NUM_EFFECTS:
+    {
+        uint8_t nEffects = handler->effects.size();
+        ws.sendBIN(connection, &nEffects, 1);
+        break;
+    }
     }
 }
 

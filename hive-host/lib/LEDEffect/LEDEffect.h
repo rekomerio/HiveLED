@@ -3,28 +3,35 @@
 #ifndef LEDEFFECT_H
 #define LEDEFFECT_H
 
-struct LEDParams
+enum Param : uint8_t
 {
-    uint8_t hue = 100;
-    uint8_t spawnRate = 100;
-    uint8_t brightness = 255;
-    uint8_t activeEffect = 0;
-    uint8_t nextFrameMs = 16;
-    uint8_t palettePosition = 0;
-    uint8_t paletteOffset = 0;
-    uint8_t syncWithId = 255;
-    uint16_t numLeds = 72;
-    uint32_t lastUpdate = 0;
+    HUE,
+    SPAWN_RATE,
+    BRIGHTNESS,
+    ACTIVE_EFFECT,
+    NEXT_FRAME_MS,
+    PALETTE_POSITION,
+    PALETTE_OFFSET,
+    SYNC_WITH_ID,
+    NUM_LEDS,
+    LAST_UPDATE,
+    NUM_PARAMS
 };
 
-enum Effect
+struct LEDParams
 {
-    CONFETTI,
-    RAINBOW,
-    SINELON,
-    BPM,
-    JUGGLE,
-    COLORPALETTE
+    uint16_t hue = 100;
+    uint16_t spawnRate = 100;
+    uint16_t brightness = 255;
+    uint16_t activeEffect = 0;
+    uint16_t nextFrameMs = 16;
+    uint16_t palettePosition = 0;
+    uint16_t paletteOffset = 0;
+    uint16_t syncWithId = 255;
+    uint16_t numLeds = 72;
+    uint32_t lastUpdate = 0;
+
+    static constexpr uint8_t GetNumParams() { return Param::NUM_PARAMS; };
 };
 
 class LEDEffect

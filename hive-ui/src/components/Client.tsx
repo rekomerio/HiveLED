@@ -2,115 +2,90 @@ import React, { useEffect, useState, useRef } from "react";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
 import Slider from "@material-ui/core/Slider";
-import { Button, Typography } from "@material-ui/core";
-import { CirclePicker } from "react-color";
+import { Button, Collapse, Typography } from "@material-ui/core";
+import { params, getDefaultValues } from "../utils/params";
+import { constructMessage } from "../utils/message";
+import { Command } from "../helpers/types";
 
 export interface ClientProps {
-    id: number;
-    socket: WebSocket;
+  id: number;
+  socket: WebSocket;
+  isConnected: boolean;
 }
 
-const colors = [
-    "#f44336",
-    "#e91e63",
-    "#9c27b0",
-    "#673ab7",
-    "#3f51b5",
-    "#2196f3",
-    "#03a9f4",
-    "#00bcd4",
-    "#009688",
-    "#4caf50",
-    "#8bc34a",
-    "#cddc39",
-    "#ffeb3b",
-    "#ffc107",
-    "#ff9800",
-    "#ff5722",
-];
-
-const params = {
-    0: "HUE",
-    1: "SPAWN_RATE",
-    2: "BRIGHTNESS",
-    3: "ACTIVE_EFFECT",
-    4: "NEXT_FRAME_MS",
-    5: "PALETTE_POSITION",
-    6: "PALETTE_OFFSET",
-    7: "SYNC_WITH_ID",
-    8: "NUM_LEDS",
-};
-
-const defaultValues = Object.keys(params).reduce((acc, curr) => {
-    acc[curr] = 0;
-    return acc;
-}, {});
+const defaultValues = getDefaultValues();
 
 const Client = (props: ClientProps) => {
-    const [isConnected, setIsConnected] = useState<boolean>(false);
-    const [values, setValues] = useState(defaultValues);
-    const [color, setColor] = useState();
-    const handleChange = (color) => setColor(color);
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const [values, setValues] = useState<{ [key: string]: number }>(
+    defaultValues
+  );
+  const previousValues = useRef<{ [key: string]: number }>(defaultValues);
+  const { isConnected, id, socket } = props;
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            Object.keys(values).forEach((key) => {
-                const arr = new Uint8Array(5);
-                arr[0] = 0; // Command
-                arr[1] = props.id; // Client id
-                arr[2] = parseInt(key); // Param
-                arr[3] = values[key]; // Value 0
-                arr[4] = 0; // Value 1
-                const blob = new Blob([arr]);
-                //console.log(arr);
-                if (isConnected) props.socket.send(blob);
-            });
-        }, 50);
+  const hasChanged = (key: string) => {
+    return previousValues.current[key] !== values[key];
+  };
 
-        return () => clearInterval(interval);
-    }, [values]);
+  const setPreviousValue = (key: string) => {
+    return (previousValues.current[key] = values[key]);
+  };
 
-    useEffect(() => {
-        console.log(color?.hsv);
-        //setValues((state) => ({ ...state, 0: color?.hsv?.h }));
-    }, [color]);
+  const getChangedValuesKeys = () => {
+    return Object.keys(values).filter((key) => hasChanged(key));
+  };
 
-    return (
-        <Paper>
-            <Box padding={2}>
-                <Typography variant="h6">Client {props.id}</Typography>
-                {Object.keys(params).map((key) => (
-                    <React.Fragment key={key}>
-                        <Typography id="range-slider" gutterBottom>
-                            {params[key]}
-                        </Typography>
-                        <Slider
-                            onChange={(e, val) =>
-                                setValues((state) => ({ ...state, [key]: val }))
-                            }
-                            value={values[key]}
-                            step={1}
-                            min={0}
-                            max={255}
-                            defaultValue={255}
-                            getAriaValueText={(val) => val.toString()}
-                        />
-                    </React.Fragment>
-                ))}
+  useEffect(() => {
+    if (!isConnected) return;
 
-                <CirclePicker
-                    color={color}
-                    onChangeComplete={handleChange}
-                    colors={colors}
-                    circleSize={60}
-                    width="100%"
-                />
-            </Box>
-            <Button color="primary" variant="contained">
-                Open
-            </Button>
-        </Paper>
-    );
+    getChangedValuesKeys().forEach((key) => {
+      if (+key === 5) return;
+
+      setPreviousValue(key);
+      const message = constructMessage(
+        Command.SetParamValue,
+        id,
+        parseInt(key),
+        values[key]
+      );
+      socket.send(message);
+    });
+  }, [values, isConnected, id, socket]);
+
+  return (
+    <Paper>
+      <Box padding={2}>
+        <Typography variant="h6">Client {id}</Typography>
+        <Collapse in={isExpanded}>
+          {Object.keys(params).map((key) => (
+            <React.Fragment key={key}>
+              <Typography id="range-slider" gutterBottom>
+                {params[key].name}
+              </Typography>
+              <Slider
+                onChange={(e, val) =>
+                  setValues((state) => ({ ...state, [key]: val as number }))
+                }
+                step={1}
+                value={values[key]}
+                min={params[key]?.min ?? 0}
+                max={params[key]?.max ?? 255}
+                getAriaValueText={(val) => val.toString()}
+                valueLabelDisplay="on"
+              />
+            </React.Fragment>
+          ))}
+        </Collapse>
+        <Button
+          color="secondary"
+          variant="contained"
+          onClick={() => setIsExpanded((x) => !x)}
+        >
+          Open
+        </Button>
+      </Box>
+    </Paper>
+  );
 };
 
 export default Client;

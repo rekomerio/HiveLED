@@ -27,8 +27,6 @@ public:
     std::array<UDPClient, MAX_CLIENTS> clients;
 
 private:
-    void FillStack();
-
     uint8_t m_NextMessageIndex;
     UDPClient *m_LastClient;
     std::array<UDPMessage, MAX_CLIENTS> m_MsgBuffer;

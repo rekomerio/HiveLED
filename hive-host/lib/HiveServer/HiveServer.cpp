@@ -68,11 +68,6 @@ void HiveServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_
     if (!handler)
         return;
 
-    if (clientId >= MAX_CLIENTS)
-        return;
-
-    char msg[64];
-
     switch (command)
     {
     case Command::SET_PARAM_VALUE:
@@ -91,17 +86,12 @@ void HiveServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_
         ws.sendBIN(connection, &nParams, 1);
         break;
     }
-    case Command::GET_NUM_EFFECTS:
-    {
-        uint8_t nEffects = handler->effects.size();
-        ws.sendBIN(connection, &nEffects, 1);
-        break;
-    }
     case Command::GET_EFFECTS:
-    {
         ws.sendTXT(connection, handler->GetEffectsJSON());
         break;
-    }
+    case Command::GET_PARAMS:
+        ws.sendTXT(connection, handler->GetParamsJSON(clientId));
+        break;
     }
 }
 

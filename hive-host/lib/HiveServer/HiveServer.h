@@ -11,8 +11,8 @@ public:
         GET_PARAM_NAME,
         GET_CLIENT_STATUS,
         GET_NUM_PARAMS,
-        GET_NUM_EFFECTS,
-        GET_EFFECTS
+        GET_EFFECTS,
+        GET_PARAMS
     };
 
     static HiveServer *GetInstance();

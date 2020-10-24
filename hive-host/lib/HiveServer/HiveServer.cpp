@@ -45,27 +45,11 @@ void HiveServer::OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *pa
         }
         break;
     case WStype_BIN:
-
         for (size_t i = 0; i < length; i++)
-        {
             Serial.println(payload[i]);
-        }
-
-        if (length < 6)
-        {
-            Serial.println("Message is too short");
-            ws.sendTXT(connection, "Message is too short");
-            return;
-        }
-
-        if (length > 6)
-        {
-            Serial.println("Message is too long");
-            ws.sendTXT(connection, "Message is too long");
-            return;
-        }
 
         HandleBinaryMessage(connection, payload, length);
+        break;
     }
 }
 

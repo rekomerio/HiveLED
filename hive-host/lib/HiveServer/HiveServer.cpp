@@ -83,16 +83,6 @@ void HiveServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_
         break;
     case Command::GET_PARAM_NAME:
         break;
-    case Command::GET_EFFECT_NAME:
-    {
-        const char *name = handler->effects[param % handler->effects.size()]->GetName();
-        strcpy(msg, name);
-        uint8_t index = handler->effects[param % handler->effects.size()]->GetIndex();
-        msg[strlen(name)] = ';';
-        strcpy(&msg[strlen(name) + 1], String(index).c_str());
-        ws.sendTXT(connection, msg);
-        break;
-    }
     case Command::GET_CLIENT_STATUS:
         break;
     case Command::GET_NUM_PARAMS:
@@ -105,6 +95,11 @@ void HiveServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_
     {
         uint8_t nEffects = handler->effects.size();
         ws.sendBIN(connection, &nEffects, 1);
+        break;
+    }
+    case Command::GET_EFFECTS:
+    {
+        ws.sendTXT(connection, handler->GetEffectsJSON());
         break;
     }
     }

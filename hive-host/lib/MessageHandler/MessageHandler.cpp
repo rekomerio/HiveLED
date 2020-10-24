@@ -81,3 +81,35 @@ void MessageHandler::SetParam(uint8_t clientId, Param param, uint16_t value)
 {
     GetParam(clientId, param) = value;
 }
+
+char *MessageHandler::GetEffectsJSON()
+{
+    memset(m_Buffer, 0, 1024);
+
+    uint16_t bufferIndex = 0;
+    m_Buffer[bufferIndex++] = '[';
+
+    auto addProperty = [&bufferIndex, this](const char *string) {
+        m_Buffer[bufferIndex++] = '"';
+        strcpy(&m_Buffer[bufferIndex], string);
+        bufferIndex += strlen(string);
+        m_Buffer[bufferIndex++] = '"';
+    };
+
+    for (size_t i = 0; i < effects.size(); i++)
+    {
+        m_Buffer[bufferIndex++] = '{';
+        addProperty(String(effects[i]->GetIndex()).c_str());
+        m_Buffer[bufferIndex++] = ':';
+        addProperty(effects[i]->GetName());
+        m_Buffer[bufferIndex++] = '}';
+
+        if (i < effects.size() - 1)
+            m_Buffer[bufferIndex++] = ',';
+    }
+
+    m_Buffer[bufferIndex++] = ']';
+    m_Buffer[bufferIndex++] = '\0';
+
+    return m_Buffer;
+}

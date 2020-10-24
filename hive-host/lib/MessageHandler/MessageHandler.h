@@ -17,9 +17,13 @@ public:
     LEDParams *GetParams(uint8_t clientId);
     uint16_t &GetParam(uint8_t clientId, Param param);
     void SetParam(uint8_t clientId, Param param, uint16_t value);
+    char *GetEffectsJSON();
 
     std::vector<LEDEffect *> effects;
     std::array<LEDParams, MAX_CLIENTS> params;
+
+private:
+    char m_Buffer[1024];
 };
 
 #endif

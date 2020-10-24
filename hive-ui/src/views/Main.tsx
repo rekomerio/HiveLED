@@ -3,6 +3,7 @@ import { Box, makeStyles } from "@material-ui/core";
 import Client from "../components/Client";
 import { Command, Option } from "../helpers/types";
 import { constructMessage } from "../utils/message";
+import { ParamValue } from "../helpers/parameters";
 
 export interface MainProps {}
 
@@ -18,7 +19,7 @@ const Main = () => {
   const classes = useStyles();
   const [isConnected, setIsConnected] = useState<boolean>(false);
   const [effects, setEffects] = useState<Option[]>([]);
-  const [params, setParams] = useState<Option[][]>([]);
+  const [params, setParams] = useState<ParamValue[]>([{}, {}, {}]);
   const socket = useRef<WebSocket>(new WebSocket("ws://192.168.43.26:81"));
 
   useEffect(() => {
@@ -40,38 +41,39 @@ const Main = () => {
           const arr = new Uint8Array(res);
           console.log(arr);
         });
-      } else if (
-        typeof e.data === "string" &&
-        (e.data.startsWith("[") || e.data.startsWith("{"))
-      ) {
+      } else if (typeof e.data === "string" && e.data.startsWith("{")) {
         const obj = JSON.parse(e.data);
-        console.log(obj);
-        if (Object.keys(obj)[0].includes("params")) {
+        const name = Object.keys(obj)[0];
+        if (name.includes("params")) {
           console.log("params received", Object.keys(obj)[0].split("@"));
-          const clientId = Object.keys(obj)[0].split("@")[0];
+          const clientId = Object.keys(obj)[0].split("@")[1];
+          console.log(clientId, obj[Object.keys(obj)[0]]);
           setParams((state) =>
-            state.map((params, i) => {
-              if (i === +clientId) return {};
+            state.map((param, i) => {
+              if (i === +clientId) return obj[Object.keys(obj)[0]];
+              return param;
             })
           );
         }
-        /*
-        const options: Option[] = JSON.parse(e.data).map((x) => {
-          return {
-            name: x[Object.keys(x)[0]],
-            value: parseInt(Object.keys(x)[0]),
-          };
-        });
-*/
-        //setEffects(options);
+        if (name.includes("effects")) {
+          const options = Object.keys(obj.effects).map((key) => {
+            return {
+              name: obj.effects[key],
+              value: +key,
+            };
+          });
+          console.log(options);
+          setEffects(options);
+        }
       }
+      return socket.current.close;
     });
   }, []);
 
   useEffect(() => {
     if (isConnected) {
-      const message = constructMessage(Command.GetParams, 0, 0, 0);
-      socket.current.send(message);
+      socket.current.send(constructMessage(Command.GetParams));
+      socket.current.send(constructMessage(Command.GetEffects));
     }
   }, [isConnected]);
 
@@ -84,6 +86,7 @@ const Main = () => {
             socket={socket.current}
             isConnected={isConnected}
             effects={effects}
+            params={params[i]}
           />
         </Box>
       ))}

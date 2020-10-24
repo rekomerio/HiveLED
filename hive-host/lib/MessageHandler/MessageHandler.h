@@ -27,6 +27,7 @@ public:
 private:
     uint16_t AddJSONQuotes(char *buffer, uint16_t bufferIndex, const char *str);
     uint16_t AddJSONKeyValue(char *buffer, uint16_t bufferIndex, const char *key, const char *value);
+    uint16_t BeginJSONString(char *buffer, const char *key);
     char m_Buffer[1024];
 };
 

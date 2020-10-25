@@ -6,6 +6,8 @@
 enum Param : uint8_t
 {
     HUE,
+    SATURATION,
+    VALUE,
     SPAWN_RATE,
     BRIGHTNESS,
     ACTIVE_EFFECT,
@@ -21,6 +23,8 @@ enum Param : uint8_t
 struct LEDParams
 {
     uint16_t hue = 100;
+    uint16_t saturation = 255;
+    uint16_t value = 255;
     uint16_t spawnRate = 100;
     uint16_t brightness = 255;
     uint16_t activeEffect = 0;

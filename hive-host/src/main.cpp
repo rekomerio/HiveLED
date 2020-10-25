@@ -11,14 +11,11 @@ Host host;
 HiveServer *server;
 MessageHandler messageHandler;
 
-const char *sssid = "Redmi";
-const char *passw = "1b18a7431459";
-
 void setup()
 {
 	Serial.begin(115200);
 	WiFi.mode(WIFI_AP_STA);
-	WiFi.begin(sssid, passw);
+	WiFi.begin(wifiSsid, wifiPass);
 
 	Serial.println(WiFi.softAPIP());
 
@@ -28,7 +25,7 @@ void setup()
 		Serial.print('.');
 	}
 
-	WiFi.softAP(ssid, pass, 1, 0, MAX_CLIENTS);
+	WiFi.softAP(apSsid, apPass, 1, 0, MAX_CLIENTS);
 
 	Serial.println(WiFi.softAPIP());
 	Serial.println(WiFi.localIP());
@@ -42,36 +39,6 @@ void setup()
 
 void loop()
 {
-
-	if (Serial.available())
-	{
-		String command = Serial.readString();
-		uint8_t index = command[0] - '0';
-		uint16_t value = strtoul((const char *)&command[2], NULL, 10);
-
-		switch (command[1])
-		{
-		case 's':
-			messageHandler.GetParams(index)->syncWithId = value;
-			break;
-		case 'o':
-			messageHandler.GetParams(index)->paletteOffset = value;
-			break;
-		case 'f':
-			messageHandler.GetParams(index)->nextFrameMs = max(value, (uint16_t)16);
-			break;
-		case 'h':
-			messageHandler.GetParams(index)->hue = value;
-			break;
-		case 'b':
-			messageHandler.GetParams(index)->brightness = value;
-			break;
-		case 'e':
-			messageHandler.GetParams(index)->activeEffect++;
-			break;
-		}
-	}
-
 	host.ReadMessage();
 	UDPMessage *message = host.PeekMessage();
 

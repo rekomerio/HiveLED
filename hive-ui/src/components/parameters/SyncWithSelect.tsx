@@ -4,8 +4,8 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import { syncWithOptions, ParamValue, ParamType } from "../../helpers/parameters";
-import { ParamPropsBase } from "../../helpers/types";
+import { syncWithOptions } from "../../helpers/parameters";
+import { ParamPropsBase, ParamType } from "../../helpers/types";
 
 export interface SyncWithSelectProps extends ParamPropsBase {
     connectedClients: number[];

@@ -1,4 +1,4 @@
-import { Option } from "./types";
+import { Option, Param, ParamType } from "./types";
 
 export const syncWithOptions: Option[] = [
     { name: "None", value: 255 },
@@ -12,41 +12,18 @@ export const syncWithOptions: Option[] = [
     { name: "Client 8", value: 7 },
 ];
 
-export interface Param {
-    [key: string]: {
-        name: string;
-        min: number;
-        max: number;
-        default: number;
-    };
-}
-
-export interface ParamValue {
-    [key: string]: number;
-}
-
-export enum ParamType {
-    Hue,
-    SpawnRate,
-    Brightness,
-    ActiveEffect,
-    NextFrameMs,
-    PalettePosition,
-    PaletteOffset,
-    SyncWithId,
-    NumLeds,
-}
-
 export const params: Param = {
-    0: { name: "HUE", min: 0, max: 255, default: 100 },
-    1: { name: "SPAWN_RATE", min: 0, max: 255, default: 150 },
-    2: { name: "BRIGHTNESS", min: 0, max: 255, default: 80 },
-    3: { name: "ACTIVE_EFFECT", min: 0, max: 6, default: 0 },
-    4: { name: "NEXT_FRAME_MS", min: 16, max: 255, default: 16 },
-    5: { name: "PALETTE_POSITION", min: 0, max: 255, default: 0 },
-    6: { name: "PALETTE_OFFSET", min: 0, max: 255, default: 0 },
-    7: { name: "SYNC_WITH_ID", min: 0, max: 255, default: 255 },
-    8: { name: "NUM_LEDS", min: 72, max: 72, default: 72 },
+    0: { name: "Hue", min: 0, max: 255, default: 100 },
+    1: { name: "Saturation", min: 0, max: 255, default: 255 },
+    2: { name: "Value", min: 0, max: 255, default: 255 },
+    3: { name: "Spawn rate", min: 0, max: 255, default: 150 },
+    4: { name: "Brightness", min: 0, max: 255, default: 80 },
+    5: { name: "Active effect", min: 0, max: 6, default: 0 },
+    6: { name: "Next frame (ms)", min: 16, max: 255, default: 16 },
+    7: { name: "Palette position", min: 0, max: 255, default: 0 },
+    8: { name: "Palette offset", min: 0, max: 150, default: 0 },
+    9: { name: "Sync with id", min: 0, max: 255, default: 255 },
+    10: { name: "Num leds", min: 72, max: 72, default: 72 },
 };
 
 export const getDefaultValues = () =>
@@ -54,3 +31,10 @@ export const getDefaultValues = () =>
         acc[curr] = params[curr].default;
         return acc;
     }, {});
+
+export const sliderParams = [
+    ParamType.Brightness,
+    ParamType.SpawnRate,
+    ParamType.PaletteOffset,
+    ParamType.NextFrameMs,
+];

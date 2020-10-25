@@ -56,6 +56,10 @@ uint16_t &MessageHandler::GetParam(uint8_t clientId, Param param)
     {
     case Param::HUE:
         return GetParams(clientId)->hue;
+    case Param::SATURATION:
+        return GetParams(clientId)->saturation;
+    case Param::VALUE:
+        return GetParams(clientId)->value;
     case Param::SPAWN_RATE:
         return GetParams(clientId)->spawnRate;
     case Param::BRIGHTNESS:

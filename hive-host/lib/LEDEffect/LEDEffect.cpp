@@ -9,7 +9,7 @@ void Sinelon::Update(CRGB *leds, LEDParams &params)
 {
     fadeToBlackBy(leds, params.numLeds, 20);
     int pos = beatsin16(13, 0, params.numLeds - 1) + params.paletteOffset;
-    leds[pos % params.numLeds] += CHSV(params.hue, 255, 192);
+    leds[pos % params.numLeds] += CHSV(params.hue, params.saturation, params.value);
 }
 
 const char *Sinelon::GetParams()
@@ -19,7 +19,8 @@ const char *Sinelon::GetParams()
 
 void Rainbow::Update(CRGB *leds, LEDParams &params)
 {
-    fill_rainbow(leds, params.numLeds, params.hue, 7);
+    fill_rainbow(leds, params.numLeds, params.palettePosition + params.paletteOffset, 7);
+    params.palettePosition++;
 }
 
 const char *Rainbow::GetParams()
@@ -80,7 +81,7 @@ void Confetti::Update(CRGB *leds, LEDParams &params)
 {
     if (millis() - params.lastUpdate > params.spawnRate)
     {
-        leds[random16(params.numLeds)] += CHSV(params.hue + random8(64), 200, 255);
+        leds[random16(params.numLeds)] += CHSV(params.hue + random8(64), params.saturation, params.value);
         params.lastUpdate = millis();
     }
 

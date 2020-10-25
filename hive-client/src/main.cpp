@@ -2,8 +2,8 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <FastLED.h>
+#include "HiveClient.h"
 #include "../../common/shared.h"
-#include "../../hive-client/lib/HiveClient/HiveClient.h"
 
 #define NETWORK_ID 1
 #define DATA_PIN 12 // D6 for Wemos D1 mini
@@ -26,7 +26,7 @@ void setup()
 
 	FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(client.GetLeds(), MAX_LEDS).setCorrection(TypicalLEDStrip);
 
-	WiFi.begin(ssid, pass);
+	WiFi.begin(apSsid, apPass);
 	WiFi.mode(WIFI_STA);
 
 	while (WiFi.status() != WL_CONNECTED)

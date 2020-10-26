@@ -15,3 +15,4 @@ This project uses PlatformIO for building and uploading the code. I recommend ge
 - [ ] Add more effects
 - [ ] Create method to discover host ip in local network
 - [ ] Add physical button to host to toggle all client LED's on and off
+- [ ] Add static IP to host and make client choose which access point to use based on signal strength

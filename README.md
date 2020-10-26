@@ -14,3 +14,4 @@ This project uses PlatformIO for building and uploading the code. I recommend ge
 - [ ] Add customizable timed events for all clients
 - [ ] Add more effects
 - [ ] Create method to discover host ip in local network
+- [ ] Add physical button to host to toggle all client LED's on and off

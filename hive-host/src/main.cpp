@@ -14,16 +14,22 @@ MessageHandler messageHandler;
 void setup()
 {
 	Serial.begin(115200);
+	pinMode(LED_BUILTIN, OUTPUT);
+
 	WiFi.mode(WIFI_AP_STA);
 	WiFi.begin(wifiSsid, wifiPass);
 
-	Serial.println(WiFi.softAPIP());
-
+	uint8_t statusLedState = 0;
 	while (WiFi.status() != WL_CONNECTED)
 	{
-		delay(250);
+		digitalWrite(LED_BUILTIN, statusLedState);
 		Serial.print('.');
+		delay(250);
+
+		statusLedState = !statusLedState;
 	}
+
+	digitalWrite(LED_BUILTIN, 1);
 
 	WiFi.softAP(apSsid, apPass, 1, 0, MAX_CLIENTS);
 

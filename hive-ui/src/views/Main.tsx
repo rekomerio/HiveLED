@@ -39,13 +39,13 @@ const Main = () => {
                 if (typeof e.data === "string" && e.data.startsWith("{")) {
                     const obj = JSON.parse(e.data);
                     const name = getName(obj);
-
+                    console.log(e.data);
                     if (name.includes("params")) {
                         const clientId = parseClientId(obj);
                         const parsedObject = mapObjectValuesToInt(
                             getObjectContents(obj)
                         ) as ParamValue;
-
+                        console.log(parsedObject);
                         setParams((state) =>
                             state.map((param, i) => {
                                 if (i === +clientId) return parsedObject;
@@ -62,7 +62,7 @@ const Main = () => {
         []
     );
 
-    const { socket, isConnected } = useSocket(socketFunctions, "ws://192.168.1.131:81");
+    const { socket, isConnected } = useSocket(socketFunctions, "ws://192.168.1.200:81");
 
     useEffect(() => {
         if (isConnected) socket.send(constructMessage(Command.GetEffects));

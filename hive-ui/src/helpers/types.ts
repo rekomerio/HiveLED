@@ -43,8 +43,8 @@ export enum ParamType {
     Brightness,
     ActiveEffect,
     NextFrameMs,
-    PalettePosition,
     PaletteOffset,
     SyncWithId,
     NumLeds,
+    HueRotationRate,
 }

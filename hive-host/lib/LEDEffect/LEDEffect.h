@@ -12,28 +12,33 @@ enum Param : uint8_t
     BRIGHTNESS,
     ACTIVE_EFFECT,
     NEXT_FRAME_MS,
-    PALETTE_POSITION,
     PALETTE_OFFSET,
     SYNC_WITH_ID,
     NUM_LEDS,
-    LAST_UPDATE,
-    NUM_PARAMS
+    HUE_ROTATION_RATE,
+
+    NUM_PARAMS,
 };
 
+// Params with _prefix are only meant to be modified by effect functions
 struct LEDParams
 {
     uint16_t hue = 100;
     uint16_t saturation = 255;
     uint16_t value = 255;
     uint16_t spawnRate = 100;
-    uint16_t brightness = 255;
+    uint16_t brightness = 100;
     uint16_t activeEffect = 0;
     uint16_t nextFrameMs = 16;
-    uint16_t palettePosition = 0;
     uint16_t paletteOffset = 0;
     uint16_t syncWithId = 255;
     uint16_t numLeds = 72;
-    uint32_t lastUpdate = 0;
+    uint16_t hueRotationRate = 0;
+
+    uint16_t _palettePosition = 0;
+    uint32_t _lastUpdate = 0;
+    uint8_t _previousEffect = 0;
+    uint32_t _lastHueRotation = 0;
 
     static constexpr uint8_t GetNumParams() { return Param::NUM_PARAMS; };
 };
@@ -42,10 +47,10 @@ class LEDEffect
 {
 public:
     LEDEffect(uint8_t index);
+    virtual void Enter(CRGB *leds, LEDParams &params) = 0;
     virtual void Update(CRGB *leds, LEDParams &params) = 0;
-    virtual const char *GetName() { return ""; };
+    virtual const char *GetName() = 0;
     virtual const uint8_t GetIndex() { return m_Index; };
-    virtual const char *GetParams() = 0;
 
 protected:
     uint8_t m_Index;
@@ -57,9 +62,9 @@ protected:
         using LEDEffect::LEDEffect;                          \
                                                              \
     public:                                                  \
+        void Enter(CRGB *leds, LEDParams &params) override;  \
         void Update(CRGB *leds, LEDParams &params) override; \
         const char *GetName() override { return NAME; }      \
-        const char *GetParams() override;                    \
     }
 
 DEFINE_EFFECT(Confetti, "Confetti");

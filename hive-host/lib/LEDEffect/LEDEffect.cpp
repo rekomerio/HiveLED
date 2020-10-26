@@ -5,6 +5,10 @@ LEDEffect::LEDEffect(uint8_t index)
     m_Index = index;
 }
 
+void Sinelon::Enter(CRGB *leds, LEDParams &params)
+{
+}
+
 void Sinelon::Update(CRGB *leds, LEDParams &params)
 {
     fadeToBlackBy(leds, params.numLeds, 20);
@@ -12,20 +16,18 @@ void Sinelon::Update(CRGB *leds, LEDParams &params)
     leds[pos % params.numLeds] += CHSV(params.hue, params.saturation, params.value);
 }
 
-const char *Sinelon::GetParams()
+void Rainbow::Enter(CRGB *leds, LEDParams &params)
 {
-    return "none";
 }
 
 void Rainbow::Update(CRGB *leds, LEDParams &params)
 {
-    fill_rainbow(leds, params.numLeds, params.palettePosition + params.paletteOffset, 7);
-    params.palettePosition++;
+    fill_rainbow(leds, params.numLeds, params._palettePosition + params.paletteOffset, 7);
+    params._palettePosition++;
 }
 
-const char *Rainbow::GetParams()
+void Bpm::Enter(CRGB *leds, LEDParams &params)
 {
-    return "none";
 }
 
 void Bpm::Update(CRGB *leds, LEDParams &params)
@@ -40,9 +42,8 @@ void Bpm::Update(CRGB *leds, LEDParams &params)
     }
 }
 
-const char *Bpm::GetParams()
+void Juggle::Enter(CRGB *leds, LEDParams &params)
 {
-    return "none";
 }
 
 void Juggle::Update(CRGB *leds, LEDParams &params)
@@ -57,38 +58,32 @@ void Juggle::Update(CRGB *leds, LEDParams &params)
     }
 }
 
-const char *Juggle::GetParams()
+void ColorPalette::Enter(CRGB *leds, LEDParams &params)
 {
-    return "none";
 }
 
 void ColorPalette::Update(CRGB *leds, LEDParams &params)
 {
     for (uint16_t i = 0; i < params.numLeds; i++)
     {
-        leds[i] = ColorFromPalette(OceanColors_p, params.palettePosition + params.paletteOffset + i);
+        leds[i] = ColorFromPalette(OceanColors_p, params._palettePosition + params.paletteOffset + i);
     }
 
-    params.palettePosition++;
+    params._palettePosition++;
 }
 
-const char *ColorPalette::GetParams()
+void Confetti::Enter(CRGB *leds, LEDParams &params)
 {
-    return "none";
+    fill_solid(leds, params.numLeds, CRGB::Black);
 }
 
 void Confetti::Update(CRGB *leds, LEDParams &params)
 {
-    if (millis() - params.lastUpdate > params.spawnRate)
+    if (millis() - params._lastUpdate > params.spawnRate)
     {
         leds[random16(params.numLeds)] += CHSV(params.hue + random8(64), params.saturation, params.value);
-        params.lastUpdate = millis();
+        params._lastUpdate = millis();
     }
 
     fadeToBlackBy(leds, params.numLeds, 5);
-}
-
-const char *Confetti::GetParams()
-{
-    return "none";
 }

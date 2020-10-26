@@ -31,14 +31,26 @@ void MessageHandler::Handle(UDPMessage *message)
     message->brightness = param.brightness;
     message->requestNextFrameMs = param.nextFrameMs;
 
+    if ((uint32_t)(millis() - param._lastHueRotation) > 255U - param.hueRotationRate)
+    {
+        param.hue++;
+        param._lastHueRotation = millis();
+    }
+
     param.activeEffect %= effects.size();
+
+    if (param.activeEffect != param._previousEffect)
+    {
+        effects[param.activeEffect]->Enter(message->leds, param);
+        param._previousEffect = param.activeEffect;
+    }
 
     effects[param.activeEffect]->Update(message->leds, param);
 }
 
 void MessageHandler::Synchronize(LEDParams &sync, LEDParams &with)
 {
-    sync.palettePosition = with.palettePosition;
+    sync._palettePosition = with._palettePosition;
     sync.activeEffect = with.activeEffect;
     sync.brightness = with.brightness;
 }
@@ -68,14 +80,14 @@ uint16_t &MessageHandler::GetParam(uint8_t clientId, Param param)
         return GetParams(clientId)->activeEffect;
     case Param::NEXT_FRAME_MS:
         return GetParams(clientId)->nextFrameMs;
-    case Param::PALETTE_POSITION:
-        return GetParams(clientId)->palettePosition;
     case Param::PALETTE_OFFSET:
         return GetParams(clientId)->paletteOffset;
     case Param::SYNC_WITH_ID:
         return GetParams(clientId)->syncWithId;
     case Param::NUM_LEDS:
         return GetParams(clientId)->numLeds;
+    case Param::HUE_ROTATION_RATE:
+        return GetParams(clientId)->hueRotationRate;
     }
 
     return fallback;

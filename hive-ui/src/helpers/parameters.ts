@@ -20,10 +20,10 @@ export const params: Param = {
     4: { name: "Brightness", min: 0, max: 255, default: 80 },
     5: { name: "Active effect", min: 0, max: 6, default: 0 },
     6: { name: "Next frame (ms)", min: 16, max: 255, default: 16 },
-    7: { name: "Palette position", min: 0, max: 255, default: 0 },
-    8: { name: "Palette offset", min: 0, max: 150, default: 0 },
-    9: { name: "Sync with id", min: 0, max: 255, default: 255 },
-    10: { name: "Num leds", min: 72, max: 72, default: 72 },
+    7: { name: "Palette offset", min: 0, max: 150, default: 0 },
+    8: { name: "Sync with id", min: 0, max: 255, default: 255 },
+    9: { name: "Num leds", min: 72, max: 72, default: 72 },
+    10: { name: "Hue rotation rate", min: 0, max: 255, default: 0 },
 };
 
 export const getDefaultValues = () =>
@@ -34,6 +34,7 @@ export const getDefaultValues = () =>
 
 export const sliderParams = [
     ParamType.Brightness,
+    ParamType.HueRotationRate,
     ParamType.SpawnRate,
     ParamType.PaletteOffset,
     ParamType.NextFrameMs,

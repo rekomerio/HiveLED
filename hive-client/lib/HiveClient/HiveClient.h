@@ -18,9 +18,9 @@ public:
         HOST_OVERLOAD
     };
 
-    HiveClient(uint8_t id);
+    HiveClient(uint8_t id, IPAddress hostAddress);
 
-    void Init();
+    uint8_t Init();
     CRGB *GetLeds();
     UDPMessage *ReadMessage();
     int RequestFrame();
@@ -30,8 +30,8 @@ public:
     uint32_t ElapsedSinceLastReceived();
     uint32_t ElapsedSinceLastSent();
     int KeepAlive();
+    void Loop();
 
-    bool isConnected;
     uint8_t id;
     IPAddress hostAddress;
 

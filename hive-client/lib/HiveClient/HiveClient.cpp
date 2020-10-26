@@ -1,26 +1,18 @@
 #include "HiveClient.h"
 
-HiveClient::HiveClient(uint8_t id)
+HiveClient::HiveClient(uint8_t id, IPAddress hostAddress)
 {
-    hostAddress = IPAddress(192, 168, 4, 1);
-    isConnected = false;
-    onConnectionChanged = nullptr;
     this->id = id;
+    this->hostAddress = hostAddress;
+    onConnectionChanged = nullptr;
     m_LastReceived = 0;
     m_LastSent = 0;
 }
 
-void HiveClient::Init()
+uint8_t HiveClient::Init()
 {
-    fill_solid(GetLeds(), MAX_LEDS, CRGB::BlueViolet);
     // Start listening to this port for incoming messages
-    while (!UDP.begin(CLIENT_PORT))
-    {
-        Serial.println("UDP setup unsuccessful");
-        delay(250);
-    }
-
-    Serial.println("UDP setup successful");
+    return UDP.begin(CLIENT_PORT);
 }
 
 CRGB *HiveClient::GetLeds()
@@ -77,9 +69,6 @@ int HiveClient::KeepAlive()
 
 int HiveClient::SendPing()
 {
-    if (!isConnected)
-        return NO_CONNECTION;
-
     if (ElapsedSinceLastSent() < 5)
         return HOST_OVERLOAD;
 
@@ -96,19 +85,14 @@ int HiveClient::SendPing()
     return 0;
 }
 
-void HiveClient::OnConnectionChanged()
+void HiveClient::Loop()
 {
-    if (onConnectionChanged)
-        onConnectionChanged(isConnected);
-}
+    KeepAlive();
+    UDPMessage *message = ReadMessage();
 
-void HiveClient::TestConnection()
-{
-    bool hasConnection = WiFi.status() == WL_CONNECTED;
-
-    if (hasConnection != isConnected)
+    if (message)
     {
-        isConnected = hasConnection;
-        OnConnectionChanged();
+        FastLED.setBrightness(message->brightness);
+        FastLED.show();
     }
 }

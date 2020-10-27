@@ -14,10 +14,10 @@ struct UDPClient
     UDPClient() : lastReceived(0), lastSent(0) {}
 };
 
-class Host
+class UDPHost
 {
 public:
-    Host();
+    UDPHost();
     void Init();
     int SendMessage(UDPMessage *message, UDPClient &client);
     int RespondToClient(UDPMessage *message);

@@ -2,14 +2,13 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <FastLED.h>
-#include "Host.h"
+#include "UDPHost.h"
 #include "HiveServer.h"
 #include "MessageHandler.h"
 #include "../../common/shared.h"
 
-Host host;
+UDPHost host;
 HiveServer *server;
-MessageHandler messageHandler;
 
 void setup()
 {
@@ -39,7 +38,6 @@ void setup()
 	host.Init();
 	messageHandler.Init();
 	server = HiveServer::GetInstance();
-	server->handler = &messageHandler;
 	server->Init();
 }
 

@@ -1,12 +1,12 @@
-#include "Host.h"
+#include "UDPHost.h"
 
-Host::Host()
+UDPHost::UDPHost()
 {
     m_LastClient = nullptr;
     m_NextMessageIndex = 0;
 }
 
-void Host::Init()
+void UDPHost::Init()
 {
     for (uint8_t i = 0; i < m_MsgBuffer.size(); i++)
         m_MsgBuffer[i].clientId = i;
@@ -20,7 +20,7 @@ void Host::Init()
     Serial.println("UDP setup successful");
 }
 
-int Host::SendMessage(UDPMessage *message, UDPClient &client)
+int UDPHost::SendMessage(UDPMessage *message, UDPClient &client)
 {
     if (UDP.beginPacket(client.ip, CLIENT_PORT))
     {
@@ -31,15 +31,15 @@ int Host::SendMessage(UDPMessage *message, UDPClient &client)
     return 0;
 }
 
-int Host::RespondToClient(UDPMessage *message)
+int UDPHost::RespondToClient(UDPMessage *message)
 {
     if (!m_LastClient)
         return -1;
 
-    return Host::SendMessage(message, *m_LastClient);
+    return UDPHost::SendMessage(message, *m_LastClient);
 }
 
-UDPMessage *Host::ReadMessage()
+UDPMessage *UDPHost::ReadMessage()
 {
     uint8_t packetSize = UDP.parsePacket();
     if (packetSize)
@@ -69,7 +69,7 @@ UDPMessage *Host::ReadMessage()
     return nullptr;
 }
 
-UDPMessage *Host::PeekMessage()
+UDPMessage *UDPHost::PeekMessage()
 {
     uint8_t &i = m_NextMessageIndex;
     ++i %= clients.size();

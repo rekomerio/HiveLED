@@ -1,8 +1,10 @@
 #include "LEDEffect.h"
 
-LEDEffect::LEDEffect(uint8_t index)
+LEDEffect::LEDEffect()
 {
-    m_Index = index;
+    static uint8_t instanceCounter = 0;
+
+    m_Index = instanceCounter++;
 }
 
 void Sinelon::Enter(CRGB *leds, LEDParams &params)

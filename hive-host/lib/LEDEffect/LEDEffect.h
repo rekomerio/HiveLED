@@ -35,9 +35,9 @@ struct LEDParams
     uint16_t numLeds = 72;
     uint16_t hueRotationRate = 0;
 
+    uint8_t _previousEffect = 0;
     uint16_t _palettePosition = 0;
     uint32_t _lastUpdate = 0;
-    uint8_t _previousEffect = 0;
     uint32_t _lastHueRotation = 0;
 
     static constexpr uint8_t GetNumParams() { return Param::NUM_PARAMS; };
@@ -46,7 +46,7 @@ struct LEDParams
 class LEDEffect
 {
 public:
-    LEDEffect(uint8_t index);
+    LEDEffect();
     virtual void Enter(CRGB *leds, LEDParams &params) = 0;
     virtual void Update(CRGB *leds, LEDParams &params) = 0;
     virtual const char *GetName() = 0;

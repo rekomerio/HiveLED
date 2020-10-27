@@ -22,13 +22,16 @@ public:
     char *GetParamsJSON(uint8_t clientId);
 
     std::vector<LEDEffect *> effects;
-    std::array<LEDParams, MAX_CLIENTS> params;
 
 private:
     uint16_t AddJSONQuotes(char *buffer, uint16_t bufferIndex, const char *str);
     uint16_t AddJSONKeyValue(char *buffer, uint16_t bufferIndex, const char *key, const char *value);
     uint16_t BeginJSONString(char *buffer, const char *key);
+
+    std::array<LEDParams, MAX_CLIENTS> m_Params;
     char m_Buffer[1024];
 };
+
+extern MessageHandler messageHandler;
 
 #endif

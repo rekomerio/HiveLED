@@ -33,11 +33,11 @@ char *MessageHandler::GetParamsJSON(uint8_t clientId)
     uint16_t bufferIndex = BeginJSONString(m_Buffer, key);
     m_Buffer[bufferIndex++] = '{';
 
-    for (uint8_t i = 0; i < params[clientId].GetNumParams(); i++)
+    for (uint8_t i = 0; i < m_Params[clientId].GetNumParams(); i++)
     {
         bufferIndex = AddJSONKeyValue(m_Buffer, bufferIndex, String(i).c_str(), String(GetParam(clientId, (Param)i)).c_str());
 
-        if (i < params[clientId].GetNumParams() - 1)
+        if (i < m_Params[clientId].GetNumParams() - 1)
             m_Buffer[bufferIndex++] = ',';
     }
 

@@ -1,37 +1,38 @@
 #include "MessageHandler.h"
 
+MessageHandler messageHandler;
+
 MessageHandler::MessageHandler()
 {
 }
 
 void MessageHandler::Init()
 {
-    uint8_t i = 0;
-    effects.push_back(new Confetti(i++));
-    effects.push_back(new Rainbow(i++));
-    effects.push_back(new Sinelon(i++));
-    effects.push_back(new Bpm(i++));
-    effects.push_back(new Juggle(i++));
-    effects.push_back(new ColorPalette(i++));
+    effects.push_back(new Confetti());
+    effects.push_back(new Rainbow());
+    effects.push_back(new Sinelon());
+    effects.push_back(new Bpm());
+    effects.push_back(new Juggle());
+    effects.push_back(new ColorPalette());
 }
 
 void MessageHandler::Handle(UDPMessage *message)
 {
-    if (message->clientId > params.size())
+    if (message->clientId > m_Params.size())
         return;
 
-    LEDParams &param = params[message->clientId];
+    LEDParams &param = m_Params[message->clientId];
 
     if (param.syncWithId == message->clientId)
         param.syncWithId = 255; // Cant sync with itself
 
     if (param.syncWithId != 0xFF && param.syncWithId < MAX_CLIENTS)
-        Synchronize(param, params[param.syncWithId]);
+        Synchronize(param, m_Params[param.syncWithId]);
 
     message->brightness = param.brightness;
     message->requestNextFrameMs = param.nextFrameMs;
 
-    if ((uint32_t)(millis() - param._lastHueRotation) > 255U - param.hueRotationRate)
+    if (param.hueRotationRate && (uint32_t)(millis() - param._lastHueRotation) > 255U - param.hueRotationRate)
     {
         param.hue++;
         param._lastHueRotation = millis();
@@ -57,37 +58,45 @@ void MessageHandler::Synchronize(LEDParams &sync, LEDParams &with)
 
 LEDParams *MessageHandler::GetParams(uint8_t clientId)
 {
-    return &params[clientId];
+    if (clientId >= m_Params.size())
+        return nullptr;
+
+    return &m_Params[clientId];
 }
 
 uint16_t &MessageHandler::GetParam(uint8_t clientId, Param param)
 {
     static uint16_t fallback = 0;
 
+    LEDParams *params = GetParams(clientId);
+
+    if (!param)
+        return fallback;
+
     switch (param)
     {
     case Param::HUE:
-        return GetParams(clientId)->hue;
+        return params->hue;
     case Param::SATURATION:
-        return GetParams(clientId)->saturation;
+        return params->saturation;
     case Param::VALUE:
-        return GetParams(clientId)->value;
+        return params->value;
     case Param::SPAWN_RATE:
-        return GetParams(clientId)->spawnRate;
+        return params->spawnRate;
     case Param::BRIGHTNESS:
-        return GetParams(clientId)->brightness;
+        return params->brightness;
     case Param::ACTIVE_EFFECT:
-        return GetParams(clientId)->activeEffect;
+        return params->activeEffect;
     case Param::NEXT_FRAME_MS:
-        return GetParams(clientId)->nextFrameMs;
+        return params->nextFrameMs;
     case Param::PALETTE_OFFSET:
-        return GetParams(clientId)->paletteOffset;
+        return params->paletteOffset;
     case Param::SYNC_WITH_ID:
-        return GetParams(clientId)->syncWithId;
+        return params->syncWithId;
     case Param::NUM_LEDS:
-        return GetParams(clientId)->numLeds;
+        return params->numLeds;
     case Param::HUE_ROTATION_RATE:
-        return GetParams(clientId)->hueRotationRate;
+        return params->hueRotationRate;
     }
 
     return fallback;

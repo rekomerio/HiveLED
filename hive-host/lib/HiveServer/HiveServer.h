@@ -19,8 +19,6 @@ public:
     void Init();
     void Update();
 
-    MessageHandler *handler;
-
 private:
     HiveServer();
 

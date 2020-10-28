@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/HiveLED/static/css/main.d644109b.chunk.css",
+    "main.js": "/HiveLED/static/js/main.c2005347.chunk.js",
+    "main.js.map": "/HiveLED/static/js/main.c2005347.chunk.js.map",
+    "runtime-main.js": "/HiveLED/static/js/runtime-main.d64e29fd.js",
+    "runtime-main.js.map": "/HiveLED/static/js/runtime-main.d64e29fd.js.map",
+    "static/js/2.157c1fe0.chunk.js": "/HiveLED/static/js/2.157c1fe0.chunk.js",
+    "static/js/2.157c1fe0.chunk.js.map": "/HiveLED/static/js/2.157c1fe0.chunk.js.map",
+    "index.html": "/HiveLED/index.html",
+    "precache-manifest.68712043efa1a801f1859817a13cd897.js": "/HiveLED/precache-manifest.68712043efa1a801f1859817a13cd897.js",
+    "service-worker.js": "/HiveLED/service-worker.js",
+    "static/css/main.d644109b.chunk.css.map": "/HiveLED/static/css/main.d644109b.chunk.css.map",
+    "static/js/2.157c1fe0.chunk.js.LICENSE.txt": "/HiveLED/static/js/2.157c1fe0.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d64e29fd.js",
+    "static/js/2.157c1fe0.chunk.js",
+    "static/css/main.d644109b.chunk.css",
+    "static/js/main.c2005347.chunk.js"
+  ]
+}

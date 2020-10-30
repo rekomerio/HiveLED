@@ -26,6 +26,8 @@ void setup()
 	pinMode(LED_BUILTIN, OUTPUT);
 
 	FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(client.GetLeds(), MAX_LEDS).setCorrection(TypicalLEDStrip);
+	fill_solid(client.GetLeds(), MAX_LEDS, CRGB::Black);
+	FastLED.show();
 
 	WiFi.mode(WIFI_STA);
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, makeStyles } from "@material-ui/core";
+import { Box, IconButton, makeStyles, Typography } from "@material-ui/core";
 import Client from "../components/Client";
 import { Command, Option, ParamValue } from "../helpers/types";
 import {
@@ -11,6 +11,7 @@ import {
     parseOptions,
 } from "../utils/message";
 import useSocket from "../hooks/useSocket";
+import { Refresh } from "@material-ui/icons";
 
 export interface MainProps {}
 
@@ -26,56 +27,77 @@ const Main = () => {
     const classes = useStyles();
     const [effects, setEffects] = useState<Option[]>([]);
     const [params, setParams] = useState<ParamValue[]>([{}, {}, {}, {}, {}, {}, {}, {}]);
+    const [clients, setClients] = useState<ParamValue>();
+    const [isConnected, setIsConnected] = useState<boolean>(false);
 
-    const socketFunctions = React.useMemo(
-        () => ({
-            onOpen: (e) => {
-                console.log(e);
-            },
-            onClose: (e) => {
-                console.log(e);
-            },
-            onMessage: (e) => {
-                if (typeof e.data === "string" && e.data.startsWith("{")) {
-                    const obj = JSON.parse(e.data);
-                    const name = getName(obj);
-                    console.log(e.data);
-                    if (name.includes("params")) {
-                        const clientId = parseClientId(obj);
-                        const parsedObject = mapObjectValuesToInt(
-                            getObjectContents(obj)
-                        ) as ParamValue;
-                        console.log(parsedObject);
-                        setParams((state) =>
-                            state.map((param, i) => {
-                                if (i === +clientId) return parsedObject;
-                                return param;
-                            })
-                        );
-                    }
-                    if (name.includes("effects")) {
-                        setEffects(parseOptions(obj, "effects"));
-                    }
-                }
-            },
-        }),
-        []
-    );
+    const socket = useSocket("ws://192.168.1.200:81");
 
-    const { socket, isConnected } = useSocket(socketFunctions, "ws://192.168.1.200:81");
+    socket.onclose = (e) => {
+        console.log("disconnected");
+        setIsConnected(false);
+    };
+    socket.onopen = (e) => {
+        console.log("connected");
+        setIsConnected(true);
+    };
+    socket.onmessage = (e) => {
+        if (typeof e.data === "string" && e.data.startsWith("{")) {
+            const obj = JSON.parse(e.data);
+            const name = getName(obj);
+            console.log(e.data);
+            if (name.includes("params")) {
+                const clientId = parseClientId(obj);
+                const parsedObject = mapObjectValuesToInt(
+                    getObjectContents(obj)
+                ) as ParamValue;
+                console.log(parsedObject);
+                setParams((state) =>
+                    state.map((param, i) => {
+                        if (i === +clientId) return parsedObject;
+                        return param;
+                    })
+                );
+            }
+            if (name.includes("effects")) {
+                setEffects(parseOptions(obj, "effects"));
+            }
+            if (name.includes("clients")) {
+                const parsedObject = mapObjectValuesToInt(
+                    getObjectContents(obj)
+                ) as ParamValue;
+                setClients(parsedObject);
+            }
+        }
+    };
+
+    const update = () => {
+        if (isConnected) {
+            socket.send(constructMessage(Command.GetClients));
+            socket.send(constructMessage(Command.GetEffects));
+        }
+    };
 
     useEffect(() => {
-        if (isConnected) socket.send(constructMessage(Command.GetEffects));
+        update();
     }, [isConnected, socket]);
 
     return (
         <div className={classes.root}>
-            {[0, 1].map((client, i) => (
+            <Box paddingTop={2} paddingLeft={2}>
+                <Typography variant="subtitle2" color={isConnected ? "secondary" : "primary"}>
+                    {isConnected ? "Connected" : "Disconnected"}
+                </Typography>
+                <IconButton onClick={update} disabled={!isConnected}>
+                    <Refresh />
+                </IconButton>
+            </Box>
+            {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
                 <Box key={i} padding={2}>
                     <Client
                         id={i}
                         socket={socket}
                         isSocketOpen={isConnected}
+                        isConnected={Boolean(clients?.[i])}
                         effects={effects}
                         params={params[i]}
                     />

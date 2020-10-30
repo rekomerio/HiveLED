@@ -1,12 +1,10 @@
+#ifndef HIVECLIENT_H
+#define HIVECLIENT_H
+
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include "../../../common/defines.h"
 #include "../../../common/Message.h"
-
-#ifndef HIVECLIENT_H
-#define HIVECLIENT_H
-
-typedef void (*Callback)(bool isConnected);
 
 class HiveClient
 {
@@ -34,8 +32,6 @@ public:
 
     uint8_t id;
     IPAddress hostAddress;
-
-    Callback onConnectionChanged;
 
 private:
     void OnConnectionChanged();

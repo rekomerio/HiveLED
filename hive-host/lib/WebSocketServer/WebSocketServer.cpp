@@ -1,6 +1,27 @@
-#include "HiveServer.h"
+#include "WebSocketServer.h"
 
-void HiveServer::OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *payload, size_t length)
+WebSocketServer::WebSocketServer() : ws(WebSocketsServer(81))
+{
+}
+
+void WebSocketServer::Init()
+{
+    ws.onEvent(m_OnWebSocketEvent);
+    ws.begin();
+}
+
+void WebSocketServer::Update()
+{
+    ws.loop();
+}
+
+WebSocketServer *WebSocketServer::GetInstance()
+{
+    static WebSocketServer *instance = new WebSocketServer();
+    return instance;
+}
+
+void WebSocketServer::OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *payload, size_t length)
 {
     switch (type)
     {
@@ -31,7 +52,7 @@ void HiveServer::OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *pa
     }
 }
 
-void HiveServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_t length)
+void WebSocketServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_t length)
 {
     uint8_t command = payload[0];
     uint8_t clientId = payload[1];
@@ -51,26 +72,19 @@ void HiveServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_
     case Command::GET_PARAM_VALUE:
         ws.sendBIN(connection, (uint8_t *)&messageHandler.GetParam(clientId, (Param)param), 2);
         break;
-    case Command::GET_PARAM_NAME:
-        break;
-    case Command::GET_CLIENT_STATUS:
-        break;
-    case Command::GET_NUM_PARAMS:
-    {
-        uint8_t nParams = LEDParams::GetNumParams();
-        ws.sendBIN(connection, &nParams, 1);
-        break;
-    }
     case Command::GET_EFFECTS:
         ws.sendTXT(connection, messageHandler.GetEffectsJSON());
         break;
     case Command::GET_PARAMS:
         ws.sendTXT(connection, messageHandler.GetParamsJSON(clientId));
         break;
+    case Command::GET_CLIENTS:
+        ws.sendTXT(connection, messageHandler.GetClientsJSON());
+        break;
     }
 }
 
-void HiveServer::m_OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *payload, size_t length)
+void WebSocketServer::m_OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_t *payload, size_t length)
 {
-    HiveServer::GetInstance()->OnWebSocketEvent(connection, type, payload, length);
+    WebSocketServer::GetInstance()->OnWebSocketEvent(connection, type, payload, length);
 }

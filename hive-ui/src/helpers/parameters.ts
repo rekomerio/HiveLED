@@ -13,17 +13,19 @@ export const syncWithOptions: Option[] = [
 ];
 
 export const params: Param = {
-    0: { name: "Hue", min: 0, max: 255, default: 100 },
-    1: { name: "Saturation", min: 0, max: 255, default: 255 },
-    2: { name: "Value", min: 0, max: 255, default: 255 },
-    3: { name: "Spawn rate", min: 0, max: 255, default: 150 },
-    4: { name: "Brightness", min: 0, max: 255, default: 80 },
-    5: { name: "Active effect", min: 0, max: 6, default: 0 },
-    6: { name: "Next frame (ms)", min: 16, max: 255, default: 16 },
-    7: { name: "Palette offset", min: 0, max: 150, default: 0 },
-    8: { name: "Sync with id", min: 0, max: 255, default: 255 },
-    9: { name: "Num leds", min: 72, max: 72, default: 72 },
-    10: { name: "Hue rotation rate", min: 0, max: 255, default: 0 },
+    [ParamType.Hue]: { name: "Hue", min: 0, max: 255, default: 100 },
+    [ParamType.Saturation]: { name: "Saturation", min: 0, max: 255, default: 255 },
+    [ParamType.Value]: { name: "Value", min: 0, max: 255, default: 255 },
+    [ParamType.SpawnRate]: { name: "Spawn rate", min: 0, max: 255, default: 150 },
+    [ParamType.Brightness]: { name: "Brightness", min: 0, max: 255, default: 80 },
+    [ParamType.ActiveEffect]: { name: "Active effect", min: 0, max: 6, default: 0 },
+    [ParamType.NextFrameMs]: { name: "Next frame (ms)", min: 16, max: 255, default: 16 },
+    [ParamType.PaletteOffset]: { name: "Palette offset", min: 0, max: 150, default: 0 },
+    [ParamType.SyncWithId]: { name: "Sync with id", min: 0, max: 255, default: 255 },
+    [ParamType.NumLeds]: { name: "Num leds", min: 72, max: 72, default: 72 },
+    [ParamType.HueRotationRate]: { name: "Hue rotation rate", min: 0, max: 255, default: 0 },
+    [ParamType.FireCooling]: { name: "Fire cooling rate", min: 20, max: 100, default: 55 },
+    [ParamType.FireSparking]: { name: "Fire sparkiness", min: 50, max: 200, default: 120 },
 };
 
 export const getDefaultValues = () =>
@@ -38,4 +40,6 @@ export const sliderParams = [
     ParamType.SpawnRate,
     ParamType.PaletteOffset,
     ParamType.NextFrameMs,
+    ParamType.FireCooling,
+    ParamType.FireSparking,
 ];

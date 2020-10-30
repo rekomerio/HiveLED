@@ -4,7 +4,6 @@ HiveClient::HiveClient(uint8_t id, IPAddress hostAddress)
 {
     this->id = id;
     this->hostAddress = hostAddress;
-    onConnectionChanged = nullptr;
     m_LastReceived = 0;
     m_LastSent = 0;
 }

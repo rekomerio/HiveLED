@@ -3,12 +3,14 @@
 #include <WiFiUdp.h>
 #include <FastLED.h>
 #include "UDPHost.h"
-#include "HiveServer.h"
+#include "WebSocketServer.h"
+#include "HttpServer.h"
 #include "MessageHandler.h"
 #include "../../common/shared.h"
 
 UDPHost host;
-HiveServer *server;
+WebSocketServer *wsServer;
+HttpServer *httpServer;
 
 void setup()
 {
@@ -35,10 +37,17 @@ void setup()
 	Serial.println(WiFi.softAPIP());
 	Serial.println(WiFi.localIP());
 
+	messageHandler.clients = host.clients.data();
+
 	host.Init();
 	messageHandler.Init();
-	server = HiveServer::GetInstance();
-	server->Init();
+	wsServer = WebSocketServer::GetInstance();
+	wsServer->Init();
+
+	httpServer = HttpServer::GetInstance();
+	httpServer->Init();
+
+	messageHandler.ReadSettingsEEPROM();
 }
 
 void loop()
@@ -52,5 +61,6 @@ void loop()
 		host.SendMessage(message, host.clients[message->clientId]);
 	}
 
-	server->Update();
+	wsServer->Update();
+	httpServer->Update();
 }

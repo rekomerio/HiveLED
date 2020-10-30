@@ -1,3 +1,6 @@
+#ifndef UDPHOST_H
+#define UDPHOST_H
+
 #include <WiFiUdp.h>
 #include <array>
 #include "../../../common/defines.h"
@@ -32,3 +35,5 @@ private:
     std::array<UDPMessage, MAX_CLIENTS> m_MsgBuffer;
     WiFiUDP UDP;
 };
+
+#endif

@@ -16,3 +16,8 @@ This project uses PlatformIO for building and uploading the code. I recommend ge
 - [ ] Create method to discover host ip in local network
 - [ ] Add physical button to host to toggle all client LED's on and off
 - [ ] Add static IP to host and make client choose which access point to use based on signal strength
+
+## React UI into SPIFFS
+ - Build React app with npm run build
+ - Copy the build folder contents into hive-host/data 
+ - Run command pio run -t uploadfs

@@ -23,6 +23,29 @@ char *MessageHandler::GetEffectsJSON()
     return m_Buffer;
 }
 
+char *MessageHandler::GetClientsJSON()
+{
+    static char *key = "clients";
+    memset(m_Buffer, 0, 1024);
+
+    uint16_t bufferIndex = BeginJSONString(m_Buffer, key);
+    m_Buffer[bufferIndex++] = '{';
+
+    for (size_t i = 0; i < MAX_CLIENTS; i++)
+    {
+        bufferIndex = AddJSONKeyValue(m_Buffer, bufferIndex, String(i).c_str(), String(clients[i].IsConnected()).c_str());
+
+        if (i < MAX_CLIENTS - 1)
+            m_Buffer[bufferIndex++] = ',';
+    }
+
+    m_Buffer[bufferIndex++] = '}';
+    m_Buffer[bufferIndex++] = '}';
+    m_Buffer[bufferIndex++] = '\0';
+
+    return m_Buffer;
+}
+
 char *MessageHandler::GetParamsJSON(uint8_t clientId)
 {
     static char *key = "params@@";

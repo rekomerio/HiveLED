@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
-import { Collapse, Fab, Typography } from "@material-ui/core";
+import { Collapse, Fab, IconButton, Typography } from "@material-ui/core";
 import { getDefaultValues } from "../helpers/parameters";
 import { constructMessage } from "../utils/message";
 import { Command, Option, ParamValue } from "../helpers/types";
@@ -10,11 +10,13 @@ import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import AllParameters from "./parameters/AllParameters";
 import AdvancedSettings from "./parameters/AdvancedSettings";
 import useThrottling from "../hooks/useThrottling";
+import { Refresh } from "@material-ui/icons";
 
 export interface ClientProps {
     id: number;
     socket: WebSocket;
     isSocketOpen: boolean;
+    isConnected: boolean;
     effects: Option[];
     params: ParamValue;
 }
@@ -26,7 +28,7 @@ const Client = (props: ClientProps) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const [values, setValues] = useState<ParamValue>(defaultValues);
     const previousValues = useRef<ParamValue>(defaultValues);
-    const { isSocketOpen, id, socket, effects } = props;
+    const { isConnected, isSocketOpen, id, socket, effects } = props;
 
     const hasChanged = (key: string) => {
         return previousValues.current[key] !== values[key];
@@ -41,7 +43,7 @@ const Client = (props: ClientProps) => {
     };
 
     useEffect(() => {
-        if (!isSocketOpen) return;
+        if (!isSocketOpen || !isConnected) return;
         throttle(() => {
             getChangedValuesKeys().forEach((key) => {
                 setPreviousValue(key);
@@ -64,22 +66,34 @@ const Client = (props: ClientProps) => {
     }, [props.params]);
 
     useEffect(() => {
-        if (isSocketOpen) socket.send(constructMessage(Command.GetParams, id));
-    }, [isSocketOpen, socket]);
+        if (isConnected && isSocketOpen) socket.send(constructMessage(Command.GetParams, id));
+    }, [isConnected, isSocketOpen, socket]);
+
+    const update = () => {
+        if (isConnected && isSocketOpen) socket.send(constructMessage(Command.GetParams, id));
+    };
 
     return (
         <Paper>
             <Box padding={2}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <div>
-                        <Typography variant="h6">Client {id + 1}</Typography>
-                        <Typography variant="subtitle2">
-                            {isSocketOpen ? "Connected" : "Disconnected"}
-                        </Typography>
-                    </div>
+                    <Box display="flex" justifyContent="space-between">
+                        <div>
+                            <Typography variant="h6">Client {id + 1}</Typography>
+                            <Typography variant="subtitle2">
+                                {isConnected ? "Connected" : "Disconnected"}
+                            </Typography>
+                        </div>
+                        <div>
+                            <IconButton onClick={update} disabled={!isConnected}>
+                                <Refresh />
+                            </IconButton>
+                        </div>
+                    </Box>
                     <Fab
                         color="secondary"
                         size="small"
+                        disabled={!isConnected}
                         onClick={() => setIsExpanded((x) => !x)}
                     >
                         {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}

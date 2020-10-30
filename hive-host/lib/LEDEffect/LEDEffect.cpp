@@ -7,32 +7,32 @@ LEDEffect::LEDEffect()
     m_Index = instanceCounter++;
 }
 
-void Sinelon::Enter(CRGB *leds, LEDParams &params)
+void Sinelon::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
 }
 
-void Sinelon::Update(CRGB *leds, LEDParams &params)
+void Sinelon::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     fadeToBlackBy(leds, params.numLeds, 20);
     int pos = beatsin16(13, 0, params.numLeds - 1) + params.paletteOffset;
     leds[pos % params.numLeds] += CHSV(params.hue, params.saturation, params.value);
 }
 
-void Rainbow::Enter(CRGB *leds, LEDParams &params)
+void Rainbow::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
 }
 
-void Rainbow::Update(CRGB *leds, LEDParams &params)
+void Rainbow::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
-    fill_rainbow(leds, params.numLeds, params._palettePosition + params.paletteOffset, 7);
-    params._palettePosition++;
+    fill_rainbow(leds, params.numLeds, helpers.palettePosition + params.paletteOffset, 7);
+    helpers.palettePosition++;
 }
 
-void Bpm::Enter(CRGB *leds, LEDParams &params)
+void Bpm::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
 }
 
-void Bpm::Update(CRGB *leds, LEDParams &params)
+void Bpm::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
     uint8_t BeatsPerMinute = 62;
@@ -44,11 +44,11 @@ void Bpm::Update(CRGB *leds, LEDParams &params)
     }
 }
 
-void Juggle::Enter(CRGB *leds, LEDParams &params)
+void Juggle::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
 }
 
-void Juggle::Update(CRGB *leds, LEDParams &params)
+void Juggle::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     // eight colored dots, weaving in and out of sync with each other
     fadeToBlackBy(leds, params.numLeds, 20);
@@ -60,32 +60,90 @@ void Juggle::Update(CRGB *leds, LEDParams &params)
     }
 }
 
-void ColorPalette::Enter(CRGB *leds, LEDParams &params)
+void ColorPalette::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
 }
 
-void ColorPalette::Update(CRGB *leds, LEDParams &params)
+void ColorPalette::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     for (uint16_t i = 0; i < params.numLeds; i++)
     {
-        leds[i] = ColorFromPalette(OceanColors_p, params._palettePosition + params.paletteOffset + i);
+        leds[i] = ColorFromPalette(OceanColors_p, helpers.palettePosition + params.paletteOffset + i);
     }
 
-    params._palettePosition++;
+    helpers.palettePosition++;
 }
 
-void Confetti::Enter(CRGB *leds, LEDParams &params)
+void Confetti::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     fill_solid(leds, params.numLeds, CRGB::Black);
 }
 
-void Confetti::Update(CRGB *leds, LEDParams &params)
+void Confetti::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
-    if (millis() - params._lastUpdate > params.spawnRate)
+    if (millis() - helpers.lastUpdate > params.spawnRate)
     {
         leds[random16(params.numLeds)] += CHSV(params.hue + random8(64), params.saturation, params.value);
-        params._lastUpdate = millis();
+        helpers.lastUpdate = millis();
     }
 
     fadeToBlackBy(leds, params.numLeds, 5);
+}
+
+void SolidColor::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
+{
+}
+
+void SolidColor::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
+{
+    fill_solid(leds, params.numLeds, CHSV(params.hue, params.saturation, params.value));
+}
+
+void Fire::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
+{
+}
+
+void Fire::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
+{
+    for (uint8_t i = 0; i < params.numLeds; i++)
+    {
+        helpers.heat[i] = qsub8(helpers.heat[i], random8(0, ((params.fireCooling * 10) / params.numLeds) + 2));
+    }
+
+    // Step 2.  Heat from each cell drifts 'up' and diffuses a little
+    for (uint8_t k = params.numLeds - 1; k >= 2; k--)
+    {
+        helpers.heat[k] = (helpers.heat[k - 1] + helpers.heat[k - 2] + helpers.heat[k - 2]) / 3;
+    }
+
+    // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
+    if (random8() < params.fireSparking)
+    {
+        uint8_t y = random8(7);
+        helpers.heat[y] = qadd8(helpers.heat[y], random8(160, 255));
+    }
+
+    // Step 4.  Map from heat cells to LED colors
+    for (uint8_t j = 0; j < params.numLeds; j++)
+    {
+        // Scale the heat value from 0-255 down to 0-240
+        // for best results with color palettes.
+        uint8_t colorIndex = scale8(helpers.heat[j], 240);
+        CRGB color = ColorFromPalette(
+            CRGBPalette16(
+                CRGB::Black,
+                CHSV(params.hue, params.saturation, params.value),
+                CHSV(params.hue + 60, params.saturation, params.value),
+                CHSV(params.hue + 60, max(params.saturation - 120, 0), params.value)),
+            colorIndex);
+
+        uint8_t pixelNumber;
+
+        if (false) // Reverse direction
+            pixelNumber = (NUM_LEDS - 1) - j;
+        else
+            pixelNumber = j;
+
+        leds[pixelNumber] = color;
+    }
 }

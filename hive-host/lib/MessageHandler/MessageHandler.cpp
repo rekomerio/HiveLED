@@ -4,6 +4,7 @@ MessageHandler messageHandler;
 
 MessageHandler::MessageHandler()
 {
+    clients = nullptr;
 }
 
 void MessageHandler::Init()
@@ -14,46 +15,61 @@ void MessageHandler::Init()
     effects.push_back(new Bpm());
     effects.push_back(new Juggle());
     effects.push_back(new ColorPalette());
+    effects.push_back(new SolidColor());
+    effects.push_back(new Fire());
+
+    memset(m_LastChangeAt.data(), 0, 4 * m_LastChangeAt.size());
+
+    EEPROM.begin(512);
 }
 
 void MessageHandler::Handle(UDPMessage *message)
 {
-    if (message->clientId > m_Params.size())
+    uint8_t clientId = message->clientId;
+
+    if (clientId >= m_Params.size())
         return;
 
-    LEDParams &param = m_Params[message->clientId];
+    LEDParams &param = m_Params[clientId];
+    LEDHelpers &helper = m_Helpers[clientId];
 
-    if (param.syncWithId == message->clientId)
+    if (param.syncWithId == clientId)
         param.syncWithId = 255; // Cant sync with itself
 
     if (param.syncWithId != 0xFF && param.syncWithId < MAX_CLIENTS)
-        Synchronize(param, m_Params[param.syncWithId]);
+        Synchronize(param, helper, m_Params[param.syncWithId], m_Helpers[param.syncWithId]);
 
     message->brightness = param.brightness;
     message->requestNextFrameMs = param.nextFrameMs;
 
-    if (param.hueRotationRate && (uint32_t)(millis() - param._lastHueRotation) > 255U - param.hueRotationRate)
+    if (param.hueRotationRate && (uint32_t)(millis() - helper.lastHueRotation) > 255U - param.hueRotationRate)
     {
         param.hue++;
-        param._lastHueRotation = millis();
+        helper.lastHueRotation = millis();
     }
 
     param.activeEffect %= effects.size();
 
-    if (param.activeEffect != param._previousEffect)
+    if (param.activeEffect != helper.previousEffect)
     {
-        effects[param.activeEffect]->Enter(message->leds, param);
-        param._previousEffect = param.activeEffect;
+        effects[param.activeEffect]->Enter(message->leds, param, helper);
+        helper.previousEffect = param.activeEffect;
     }
 
-    effects[param.activeEffect]->Update(message->leds, param);
+    if (m_LastChangeAt[clientId] && (uint32_t)(millis() - m_LastChangeAt[clientId]) > 15000)
+    {
+        SaveChangesEEPROM(clientId);
+        m_LastChangeAt[clientId] = 0;
+    }
+
+    effects[param.activeEffect]->Update(message->leds, param, helper);
 }
 
-void MessageHandler::Synchronize(LEDParams &sync, LEDParams &with)
+void MessageHandler::Synchronize(LEDParams &pSync, LEDHelpers &hSync, LEDParams &pWith, LEDHelpers hWith)
 {
-    sync._palettePosition = with._palettePosition;
-    sync.activeEffect = with.activeEffect;
-    sync.brightness = with.brightness;
+    hWith.palettePosition = hWith.palettePosition;
+    pSync.activeEffect = pWith.activeEffect;
+    pSync.brightness = pWith.brightness;
 }
 
 LEDParams *MessageHandler::GetParams(uint8_t clientId)
@@ -64,13 +80,13 @@ LEDParams *MessageHandler::GetParams(uint8_t clientId)
     return &m_Params[clientId];
 }
 
-uint16_t &MessageHandler::GetParam(uint8_t clientId, Param param)
+uint8_t &MessageHandler::GetParam(uint8_t clientId, Param param)
 {
-    static uint16_t fallback = 0;
+    static uint8_t fallback = 0;
 
     LEDParams *params = GetParams(clientId);
 
-    if (!param)
+    if (params == nullptr)
         return fallback;
 
     switch (param)
@@ -97,12 +113,17 @@ uint16_t &MessageHandler::GetParam(uint8_t clientId, Param param)
         return params->numLeds;
     case Param::HUE_ROTATION_RATE:
         return params->hueRotationRate;
+    case Param::FIRE_COOLING:
+        return params->fireCooling;
+    case Param::FIRE_SPARKING:
+        return params->fireSparking;
     }
 
     return fallback;
 }
 
-void MessageHandler::SetParam(uint8_t clientId, Param param, uint16_t value)
+void MessageHandler::SetParam(uint8_t clientId, Param param, uint8_t value)
 {
     GetParam(clientId, param) = value;
+    m_LastChangeAt[clientId] = millis();
 }

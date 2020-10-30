@@ -1,11 +1,9 @@
 export enum Command {
     SetParamValue,
     GetParamValue,
-    GetParamName,
-    GetClientStatus,
-    GetNumParams,
     GetEffects,
     GetParams,
+    GetClients,
 }
 
 export interface Option {
@@ -47,4 +45,6 @@ export enum ParamType {
     SyncWithId,
     NumLeds,
     HueRotationRate,
+    FireCooling,
+    FireSparking,
 }

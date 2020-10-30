@@ -1,26 +1,27 @@
+#ifndef WEBSOCKETSERVER_H
+#define WEBSOCKETSERVER_H
+
 #include <WebSocketsServer.h>
 #include "MessageHandler.h"
 
-class HiveServer
+class WebSocketServer
 {
 public:
     enum Command : uint8_t
     {
         SET_PARAM_VALUE,
         GET_PARAM_VALUE,
-        GET_PARAM_NAME,
-        GET_CLIENT_STATUS,
-        GET_NUM_PARAMS,
         GET_EFFECTS,
-        GET_PARAMS
+        GET_PARAMS,
+        GET_CLIENTS,
     };
 
-    static HiveServer *GetInstance();
+    static WebSocketServer *GetInstance();
     void Init();
     void Update();
 
 private:
-    HiveServer();
+    WebSocketServer();
 
     void HandleWSRoute();
     void HandleBinaryMessage(uint8_t connection, uint8_t *payload, size_t length);
@@ -29,3 +30,5 @@ private:
 
     WebSocketsServer ws;
 };
+
+#endif

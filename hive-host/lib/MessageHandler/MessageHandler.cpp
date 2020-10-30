@@ -48,6 +48,7 @@ void MessageHandler::Handle(UDPMessage *message)
         helper.lastHueRotation = millis();
     }
 
+    param.activePalette %= hiveColorPaletteCount;
     param.activeEffect %= effects.size();
 
     if (param.activeEffect != helper.previousEffect)
@@ -56,7 +57,7 @@ void MessageHandler::Handle(UDPMessage *message)
         helper.previousEffect = param.activeEffect;
     }
 
-    if (m_LastChangeAt[clientId] && (uint32_t)(millis() - m_LastChangeAt[clientId]) > 15000)
+    if (m_LastChangeAt[clientId] && (uint32_t)(millis() - m_LastChangeAt[clientId]) > 30000)
     {
         SaveChangesEEPROM(clientId);
         m_LastChangeAt[clientId] = 0;
@@ -67,7 +68,8 @@ void MessageHandler::Handle(UDPMessage *message)
 
 void MessageHandler::Synchronize(LEDParams &pSync, LEDHelpers &hSync, LEDParams &pWith, LEDHelpers hWith)
 {
-    hWith.palettePosition = hWith.palettePosition;
+    hSync.palettePosition = hWith.palettePosition;
+    pSync.activePalette = pWith.activePalette;
     pSync.activeEffect = pWith.activeEffect;
     pSync.brightness = pWith.brightness;
 }
@@ -117,6 +119,8 @@ uint8_t &MessageHandler::GetParam(uint8_t clientId, Param param)
         return params->fireCooling;
     case Param::FIRE_SPARKING:
         return params->fireSparking;
+    case Param::ACTIVE_PALETTE:
+        return params->activePalette;
     }
 
     return fallback;

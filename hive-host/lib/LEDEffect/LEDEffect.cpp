@@ -66,9 +66,10 @@ void ColorPalette::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 
 void ColorPalette::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
+    CRGBPalette16 palette = hiveColorPalettes[params.activePalette];
     for (uint16_t i = 0; i < params.numLeds; i++)
     {
-        leds[i] = ColorFromPalette(OceanColors_p, helpers.palettePosition + params.paletteOffset + i);
+        leds[i] = ColorFromPalette(palette, helpers.palettePosition + params.paletteOffset + i);
     }
 
     helpers.palettePosition++;
@@ -134,7 +135,7 @@ void Fire::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
                 CRGB::Black,
                 CHSV(params.hue, params.saturation, params.value),
                 CHSV(params.hue + 60, params.saturation, params.value),
-                CHSV(params.hue + 60, max(params.saturation - 120, 0), params.value)),
+                CHSV(params.hue + 60, qsub8(params.saturation, 120), params.value)),
             colorIndex);
 
         uint8_t pixelNumber;

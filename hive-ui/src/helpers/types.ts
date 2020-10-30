@@ -16,12 +16,16 @@ export interface ParamPropsBase {
     setValues: React.Dispatch<React.SetStateAction<ParamValue>>;
 }
 
+type ParamComponent = "slider";
+
 export interface Param {
     [key: string]: {
         name: string;
         min: number;
         max: number;
         default: number;
+        effects?: string[];
+        component?: ParamComponent;
     };
 }
 
@@ -47,4 +51,5 @@ export enum ParamType {
     HueRotationRate,
     FireCooling,
     FireSparking,
+    ActivePalette,
 }

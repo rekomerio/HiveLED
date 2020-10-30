@@ -4,7 +4,7 @@ import Box from "@material-ui/core/Box";
 import { Collapse, Fab, IconButton, Typography } from "@material-ui/core";
 import { getDefaultValues } from "../helpers/parameters";
 import { constructMessage } from "../utils/message";
-import { Command, Option, ParamValue } from "../helpers/types";
+import { Command, Option, ParamValue, Param } from "../helpers/types";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import AllParameters from "./parameters/AllParameters";
@@ -18,7 +18,9 @@ export interface ClientProps {
     isSocketOpen: boolean;
     isConnected: boolean;
     effects: Option[];
+    palettes: Option[];
     params: ParamValue;
+    customParams: Param;
 }
 
 const defaultValues = getDefaultValues();
@@ -28,7 +30,7 @@ const Client = (props: ClientProps) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const [values, setValues] = useState<ParamValue>(defaultValues);
     const previousValues = useRef<ParamValue>(defaultValues);
-    const { isConnected, isSocketOpen, id, socket, effects } = props;
+    const { isConnected, isSocketOpen, id, socket, effects, palettes, customParams } = props;
 
     const hasChanged = (key: string) => {
         return previousValues.current[key] !== values[key];
@@ -105,6 +107,8 @@ const Client = (props: ClientProps) => {
                         values={values}
                         setValues={setValues}
                         effects={effects}
+                        palettes={palettes}
+                        customParams={customParams}
                     />
                 </Collapse>
                 <AdvancedSettings values={values} setValues={setValues} />

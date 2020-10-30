@@ -55,6 +55,7 @@ bool HttpServer::HandleFileRead(String path)
             path += ".gz";
 
         File file = SPIFFS.open(path, "r");
+        server.sendHeader("Access-Control-Allow-Origin", "*");
         server.streamFile(file, contentType);
         file.close();
 

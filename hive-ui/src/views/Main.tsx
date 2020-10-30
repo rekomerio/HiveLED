@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, IconButton, makeStyles, Typography } from "@material-ui/core";
 import Client from "../components/Client";
-import { Command, Option, ParamValue } from "../helpers/types";
+import { Command, Option, Param, ParamValue } from "../helpers/types";
 import {
     constructMessage,
     getName,
@@ -12,6 +12,7 @@ import {
 } from "../utils/message";
 import useSocket from "../hooks/useSocket";
 import { Refresh } from "@material-ui/icons";
+import axios from "axios";
 
 export interface MainProps {}
 
@@ -26,6 +27,8 @@ const useStyles = makeStyles((theme) => ({
 const Main = () => {
     const classes = useStyles();
     const [effects, setEffects] = useState<Option[]>([]);
+    const [palettes, setPalettes] = useState<Option[]>([]);
+    const [customParams, setCustomParams] = useState<Param>({});
     const [params, setParams] = useState<ParamValue[]>([{}, {}, {}, {}, {}, {}, {}, {}]);
     const [clients, setClients] = useState<ParamValue>();
     const [isConnected, setIsConnected] = useState<boolean>(false);
@@ -70,8 +73,29 @@ const Main = () => {
         }
     };
 
+    const getParams = async () => {
+        try {
+            const res = await axios.get("http://192.168.1.200/json/params.json");
+            setCustomParams(res.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    const getPalettes = async () => {
+        try {
+            const res = await axios.get("http://192.168.1.200/json/palettes.json");
+            setPalettes(res.data);
+            console.log(res.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
     const update = () => {
         if (isConnected) {
+            getParams();
+            getPalettes();
             socket.send(constructMessage(Command.GetClients));
             socket.send(constructMessage(Command.GetEffects));
         }
@@ -99,7 +123,9 @@ const Main = () => {
                         isSocketOpen={isConnected}
                         isConnected={Boolean(clients?.[i])}
                         effects={effects}
+                        palettes={palettes}
                         params={params[i]}
+                        customParams={customParams}
                     />
                 </Box>
             ))}

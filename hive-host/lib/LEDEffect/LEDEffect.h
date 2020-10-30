@@ -3,6 +3,7 @@
 
 #include <FastLED.h>
 #include <array>
+#include "ColorPalettes.h"
 #include "../../../common/defines.h"
 
 enum Param : uint8_t
@@ -20,6 +21,7 @@ enum Param : uint8_t
     HUE_ROTATION_RATE,
     FIRE_COOLING,
     FIRE_SPARKING,
+    ACTIVE_PALETTE,
 
     NUM_PARAMS,
 };
@@ -39,6 +41,7 @@ struct LEDParams
     uint8_t hueRotationRate = 0;
     uint8_t fireCooling = 55;
     uint8_t fireSparking = 120;
+    uint8_t activePalette = 0;
 
     static constexpr uint8_t GetNumParams() { return Param::NUM_PARAMS; };
 };
@@ -90,5 +93,8 @@ DEFINE_EFFECT(Juggle, "Juggle");
 DEFINE_EFFECT(ColorPalette, "Color palette");
 DEFINE_EFFECT(SolidColor, "Solid color");
 DEFINE_EFFECT(Fire, "Fire");
+
+extern const TProgmemRGBGradientPalettePtr hiveColorPalettes[];
+extern const uint8_t hiveColorPaletteCount;
 
 #endif

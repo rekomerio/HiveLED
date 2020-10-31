@@ -91,7 +91,7 @@ const AllParameters = (props: AllParametersProps) => {
                 connectedClients={[0, 1]}
                 clientId={clientId}
             />
-            <AdvancedSettings values={values} setValues={setValues} />
+            <AdvancedSettings values={values} setValues={setValues} clientId={clientId} />
         </div>
     );
 };

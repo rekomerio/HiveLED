@@ -12,6 +12,7 @@ export const syncWithOptions: Option[] = [
     { name: "Client 8", value: 7 },
 ];
 
+// Here are parameters that every effect uses
 export const params: Param = {
     [ParamType.Hue]: { name: "Hue", min: 0, max: 255, default: 100 },
     [ParamType.Saturation]: { name: "Saturation", min: 0, max: 255, default: 255 },
@@ -23,16 +24,17 @@ export const params: Param = {
     [ParamType.NumLeds]: { name: "Num leds", min: 72, max: 72, default: 72 },
     [ParamType.HueRotationRate]: { name: "Hue rotation rate", min: 0, max: 255, default: 0 },
     [ParamType.ActivePalette]: { name: "Active palette", min: 0, max: 255, default: 0 },
+    [ParamType.PowerState]: { name: "Power state", min: 0, max: 1, default: 1 },
 };
-
-export const getDefaultValues = () =>
-    Object.keys(params).reduce((acc, curr) => {
-        acc[curr] = params[curr].default;
-        return acc;
-    }, {});
 
 export const sliderParams = [
     ParamType.Brightness,
     ParamType.HueRotationRate,
     ParamType.NextFrameMs,
 ];
+
+export const getDefaultValues = () =>
+    Object.keys(params).reduce((acc, curr) => {
+        acc[curr] = params[curr].default;
+        return acc;
+    }, {});

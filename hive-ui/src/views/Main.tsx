@@ -91,21 +91,20 @@ const Main = () => {
     };
 
     const update = () => {
-        if (isConnected) {
-            getParams();
-            getPalettes();
-            socket.send(constructMessage(Command.GetClients));
-            socket.send(constructMessage(Command.GetEffects));
-        }
+        getParams();
+        getPalettes();
+        socket.send(constructMessage(Command.GetClients));
+        socket.send(constructMessage(Command.GetEffects));
     };
 
     useEffect(() => {
-        update();
+        if (isConnected) update();
+        document.title = "LED Control - " + (isConnected ? "Connected" : "Disconnected");
     }, [isConnected, socket]);
 
     return (
         <div className={classes.root}>
-            <Box paddingTop={2} paddingLeft={2}>
+            <Box padding={2} display="flex" justifyContent="space-between" alignItems="center">
                 <Typography variant="subtitle2" color={isConnected ? "secondary" : "primary"}>
                     {isConnected ? "Connected" : "Disconnected"}
                 </Typography>
@@ -114,12 +113,12 @@ const Main = () => {
                 </IconButton>
             </Box>
             {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => (
-                <Box key={i} padding={2}>
+                <Box key={i} paddingX={2} paddingY={1}>
                     <Client
                         id={i}
                         socket={socket}
                         isSocketOpen={isConnected}
-                        isConnected={Boolean(clients?.[i])}
+                        isConnected={isConnected && Boolean(clients?.[i])}
                         effects={effects}
                         palettes={palettes}
                         params={params[i]}

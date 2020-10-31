@@ -22,6 +22,7 @@ enum Param : uint8_t
     FIRE_COOLING,
     FIRE_SPARKING,
     ACTIVE_PALETTE,
+    POWER_STATE,
 
     NUM_PARAMS,
 };
@@ -42,6 +43,7 @@ struct LEDParams
     uint8_t fireCooling = 55;
     uint8_t fireSparking = 120;
     uint8_t activePalette = 0;
+    uint8_t powerState = 1;
 
     static constexpr uint8_t GetNumParams() { return Param::NUM_PARAMS; };
 };

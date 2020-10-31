@@ -52,4 +52,5 @@ export enum ParamType {
     FireCooling,
     FireSparking,
     ActivePalette,
+    PowerState,
 }

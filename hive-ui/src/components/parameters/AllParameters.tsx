@@ -5,6 +5,7 @@ import SyncWithSelect from "./SyncWithSelect";
 import { ParamPropsBase, Option, Param, ParamType } from "../../helpers/types";
 import ColorWheel from "./ColorWheel";
 import GeneralSelect from "./GeneralSelect";
+import AdvancedSettings from "./AdvancedSettings";
 
 export interface AllParametersProps extends ParamPropsBase {
     clientId: number;
@@ -90,6 +91,7 @@ const AllParameters = (props: AllParametersProps) => {
                 connectedClients={[0, 1]}
                 clientId={clientId}
             />
+            <AdvancedSettings values={values} setValues={setValues} />
         </div>
     );
 };

@@ -39,7 +39,7 @@ void MessageHandler::Handle(UDPMessage *message)
     if (param.syncWithId != 0xFF && param.syncWithId < MAX_CLIENTS)
         Synchronize(param, helper, m_Params[param.syncWithId], m_Helpers[param.syncWithId]);
 
-    message->brightness = param.brightness;
+    message->brightness = param.powerState ? param.brightness : 0;
     message->requestNextFrameMs = param.nextFrameMs;
 
     if (param.hueRotationRate && (uint32_t)(millis() - helper.lastHueRotation) > 255U - param.hueRotationRate)
@@ -121,6 +121,8 @@ uint8_t &MessageHandler::GetParam(uint8_t clientId, Param param)
         return params->fireSparking;
     case Param::ACTIVE_PALETTE:
         return params->activePalette;
+    case Param::POWER_STATE:
+        return params->powerState;
     }
 
     return fallback;

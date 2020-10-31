@@ -9,13 +9,23 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
-import { useTheme } from "@material-ui/core/styles";
-import { TextField } from "@material-ui/core";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { Box, TextField } from "@material-ui/core";
+import { Close } from "@material-ui/icons";
 
 export interface AdvancedSettingsProps extends ParamPropsBase {}
 
+const useStyles = makeStyles((theme) => ({
+    fields: {
+        "& > *": {
+            marginTop: theme.spacing(2),
+        },
+    },
+}));
+
 const AdvancedSettings: React.SFC<AdvancedSettingsProps> = (props: AdvancedSettingsProps) => {
     const theme = useTheme();
+    const classes = useStyles();
     const [isOpen, setIsOpen] = useState<boolean>(false);
 
     const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -41,21 +51,30 @@ const AdvancedSettings: React.SFC<AdvancedSettingsProps> = (props: AdvancedSetti
                 onClose={handleClose}
                 aria-labelledby="responsive-dialog-title"
             >
-                <DialogTitle>Advanced settings</DialogTitle>
+                <Box display="flex" justifyContent="space-between" alignItems="center">
+                    <DialogTitle>Advanced settings</DialogTitle>
+                    <span>
+                        <IconButton onClick={handleClose}>
+                            <Close />
+                        </IconButton>
+                    </span>
+                </Box>
                 <DialogContent dividers>
-                    <TextField
-                        label="Number of LED's"
-                        type="number"
-                        variant="filled"
-                        size="small"
-                        defaultValue={values[ParamType.NumLeds]}
-                    />
-                    <TextField
-                        label="Client nickname"
-                        variant="filled"
-                        size="small"
-                        defaultValue="Client"
-                    />
+                    <div className={classes.fields}>
+                        <TextField
+                            label="Client nickname"
+                            variant="filled"
+                            defaultValue="Client"
+                            fullWidth
+                        />
+                        <TextField
+                            label="Number of LED's"
+                            type="number"
+                            variant="filled"
+                            defaultValue={values[ParamType.NumLeds]}
+                            fullWidth
+                        />
+                    </div>
                 </DialogContent>
                 <DialogActions>
                     <Button

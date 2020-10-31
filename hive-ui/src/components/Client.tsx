@@ -1,16 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
-import { Collapse, Fab, IconButton, Typography } from "@material-ui/core";
+import { Collapse, Fab, IconButton, makeStyles, Typography } from "@material-ui/core";
 import { getDefaultValues } from "../helpers/parameters";
 import { constructMessage } from "../utils/message";
-import { Command, Option, ParamValue, Param } from "../helpers/types";
+import { Command, Option, ParamValue, Param, ParamType } from "../helpers/types";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import ExpandLessIcon from "@material-ui/icons/ExpandLess";
 import AllParameters from "./parameters/AllParameters";
-import AdvancedSettings from "./parameters/AdvancedSettings";
+import PowerSettingsNewIcon from "@material-ui/icons/PowerSettingsNew";
 import useThrottling from "../hooks/useThrottling";
-import { Refresh } from "@material-ui/icons";
+import RefreshIcon from "@material-ui/icons/Refresh";
 
 export interface ClientProps {
     id: number;
@@ -23,9 +23,16 @@ export interface ClientProps {
     customParams: Param;
 }
 
+const useStyles = makeStyles((theme) => ({
+    button: {
+        marginRight: theme.spacing(2),
+    },
+}));
+
 const defaultValues = getDefaultValues();
 
 const Client = (props: ClientProps) => {
+    const classes = useStyles();
     const throttle = useThrottling();
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const [values, setValues] = useState<ParamValue>(defaultValues);
@@ -42,6 +49,14 @@ const Client = (props: ClientProps) => {
 
     const getChangedValuesKeys = () => {
         return Object.keys(values).filter((key) => hasChanged(key));
+    };
+
+    const setPowerState = (value: number) => {
+        setValues((state) => ({ ...state, [ParamType.PowerState]: value }));
+    };
+
+    const togglePowerState = () => {
+        setPowerState(values[ParamType.PowerState] ? 0 : 1);
     };
 
     useEffect(() => {
@@ -79,27 +94,40 @@ const Client = (props: ClientProps) => {
         <Paper>
             <Box padding={2}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Box display="flex" justifyContent="space-between">
-                        <div>
-                            <Typography variant="h6">Client {id + 1}</Typography>
-                            <Typography variant="subtitle2">
-                                {isConnected ? "Connected" : "Disconnected"}
-                            </Typography>
-                        </div>
-                        <div>
-                            <IconButton onClick={update} disabled={!isConnected}>
-                                <Refresh />
-                            </IconButton>
-                        </div>
-                    </Box>
-                    <Fab
-                        color="secondary"
-                        size="small"
-                        disabled={!isConnected}
-                        onClick={() => setIsExpanded((x) => !x)}
-                    >
-                        {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                    </Fab>
+                    <div>
+                        <Typography variant="h5">Client {id + 1}</Typography>
+                        <Typography
+                            variant="subtitle2"
+                            color={isConnected ? "secondary" : "primary"}
+                        >
+                            {isConnected ? "Connected" : "Disconnected"}
+                        </Typography>
+                    </div>
+                    <div>
+                        <Fab
+                            color="secondary"
+                            onClick={update}
+                            disabled={!isConnected}
+                            className={classes.button}
+                        >
+                            <RefreshIcon />
+                        </Fab>
+                        <Fab
+                            color={values[ParamType.PowerState] ? "secondary" : "primary"}
+                            disabled={!isConnected}
+                            onClick={togglePowerState}
+                            className={classes.button}
+                        >
+                            <PowerSettingsNewIcon />
+                        </Fab>
+                        <Fab
+                            color="secondary"
+                            disabled={!isConnected}
+                            onClick={() => setIsExpanded((x) => !x)}
+                        >
+                            {isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+                        </Fab>
+                    </div>
                 </Box>
                 <Collapse in={isExpanded}>
                     <AllParameters
@@ -111,7 +139,6 @@ const Client = (props: ClientProps) => {
                         customParams={customParams}
                     />
                 </Collapse>
-                <AdvancedSettings values={values} setValues={setValues} />
             </Box>
         </Paper>
     );

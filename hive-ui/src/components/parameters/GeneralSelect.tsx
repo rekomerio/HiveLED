@@ -9,9 +9,12 @@ import Button from "@material-ui/core/Button";
 import Box from "@material-ui/core/Box";
 import NavigateBeforeIcon from "@material-ui/icons/NavigateBefore";
 import NavigateNextIcon from "@material-ui/icons/NavigateNext";
+import { trimString } from "../../utils/common";
 
-export interface SelectPaletteProps extends ParamPropsBase {
-    palettes: Option[];
+export interface GeneralSelectProps extends ParamPropsBase {
+    options: Option[];
+    label: string;
+    paramType: ParamType;
 }
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -26,30 +29,30 @@ const useStyles = makeStyles((theme: Theme) =>
     })
 );
 
-const SelectPalette = (props: SelectPaletteProps) => {
+const GeneralSelect = (props: GeneralSelectProps) => {
     const classes = useStyles();
-    const { values, setValues, palettes } = props;
+    const { values, setValues, options, label, paramType } = props;
 
-    const currentValue = values[ParamType.ActivePalette];
+    const currentValue = values[paramType];
 
     const setValue = (value: number) => {
         setValues((state) => ({
             ...state,
-            [ParamType.ActivePalette]: value,
+            [paramType]: value,
         }));
     };
 
     return (
         <div>
             <FormControl className={classes.formControl} fullWidth>
-                <InputLabel id="palette-select-label">Active palette</InputLabel>
+                <InputLabel id={`general-select-label-${paramType}`}>{label}</InputLabel>
                 <Select
-                    labelId="palette-select-label"
-                    id="palette-select"
+                    labelId={`general-select-label-${paramType}`}
+                    id={`general-select-${paramType}`}
                     value={currentValue}
                     onChange={(e) => setValue(parseInt(e.target.value as string))}
                 >
-                    {palettes.map((option) => (
+                    {options.map((option) => (
                         <MenuItem key={option.value} value={option.value}>
                             {option.name}
                         </MenuItem>
@@ -65,21 +68,21 @@ const SelectPalette = (props: SelectPaletteProps) => {
                     disabled={currentValue <= 0}
                     startIcon={<NavigateBeforeIcon />}
                 >
-                    {palettes[currentValue - 1]?.name ?? "None"}
+                    {trimString(options[currentValue - 1]?.name, 15) ?? "None"}
                 </Button>
                 <Button
                     size="small"
                     color="secondary"
                     fullWidth
                     onClick={() => setValue(currentValue + 1)}
-                    disabled={currentValue >= palettes.length - 1}
+                    disabled={currentValue >= options.length - 1}
                     endIcon={<NavigateNextIcon />}
                 >
-                    {palettes[currentValue + 1]?.name ?? "None"}
+                    {trimString(options[currentValue + 1]?.name, 15) ?? "None"}
                 </Button>
             </Box>
         </div>
     );
 };
 
-export default SelectPalette;
+export default GeneralSelect;

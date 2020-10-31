@@ -13,6 +13,7 @@ import {
 import useSocket from "../hooks/useSocket";
 import { Refresh } from "@material-ui/icons";
 import axios from "axios";
+import { API_URL, WS_URL } from "../config";
 
 export interface MainProps {}
 
@@ -33,7 +34,7 @@ const Main = () => {
     const [clients, setClients] = useState<ParamValue>();
     const [isConnected, setIsConnected] = useState<boolean>(false);
 
-    const socket = useSocket("ws://192.168.1.200:81");
+    const socket = useSocket(WS_URL);
 
     socket.onclose = (e) => {
         console.log("disconnected");
@@ -47,13 +48,11 @@ const Main = () => {
         if (typeof e.data === "string" && e.data.startsWith("{")) {
             const obj = JSON.parse(e.data);
             const name = getName(obj);
-            console.log(e.data);
             if (name.includes("params")) {
                 const clientId = parseClientId(obj);
                 const parsedObject = mapObjectValuesToInt(
                     getObjectContents(obj)
                 ) as ParamValue;
-                console.log(parsedObject);
                 setParams((state) =>
                     state.map((param, i) => {
                         if (i === +clientId) return parsedObject;
@@ -75,7 +74,7 @@ const Main = () => {
 
     const getParams = async () => {
         try {
-            const res = await axios.get("http://192.168.1.200/json/params.json");
+            const res = await axios.get(`${API_URL}/json/params.json`);
             setCustomParams(res.data);
         } catch (error) {
             console.error(error);
@@ -84,9 +83,8 @@ const Main = () => {
 
     const getPalettes = async () => {
         try {
-            const res = await axios.get("http://192.168.1.200/json/palettes.json");
+            const res = await axios.get(`${API_URL}/json/palettes.json`);
             setPalettes(res.data);
-            console.log(res.data);
         } catch (error) {
             console.error(error);
         }

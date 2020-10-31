@@ -6,10 +6,10 @@
 #include "../../common/shared.h"
 
 #define NETWORK_ID 1
-#define DATA_PIN 12 // D6 for Wemos D1 mini
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
-
+#define DATA_PIN D6
+// Connect to access point shared by host = 1; Connect to WiFi network = 0
 #define HOST_AP 1
 
 uint32_t disconnectedAt = 0;
@@ -25,7 +25,7 @@ void setup()
 	Serial.begin(115200);
 	pinMode(LED_BUILTIN, OUTPUT);
 
-	FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(client.GetLeds(), MAX_LEDS).setCorrection(TypicalLEDStrip);
+	FastLED.addLeds<LED_TYPE, DATA_PIN, COLOR_ORDER>(client.GetLeds(), MAX_LEDS).setCorrection(LEDColorCorrection::TypicalLEDStrip);
 	fill_solid(client.GetLeds(), MAX_LEDS, CRGB::Black);
 	FastLED.show();
 

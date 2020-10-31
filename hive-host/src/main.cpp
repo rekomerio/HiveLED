@@ -47,6 +47,7 @@ void setup()
 	httpServer = HttpServer::GetInstance();
 	httpServer->Init();
 
+	// When adding new parameters, comment this line and boot the device once and change some params so they get set correctly in memory
 	messageHandler.ReadSettingsEEPROM();
 }
 

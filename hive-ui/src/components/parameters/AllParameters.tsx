@@ -1,11 +1,10 @@
 import React from "react";
 import { Typography, Slider, makeStyles } from "@material-ui/core";
 import { sliderParams, params } from "../../helpers/parameters";
-import SelectEffect from "./SelectEffect";
 import SyncWithSelect from "./SyncWithSelect";
 import { ParamPropsBase, Option, Param, ParamType } from "../../helpers/types";
 import ColorWheel from "./ColorWheel";
-import SelectPalette from "./SelectPalette";
+import GeneralSelect from "./GeneralSelect";
 
 export interface AllParametersProps extends ParamPropsBase {
     clientId: number;
@@ -34,7 +33,13 @@ const AllParameters = (props: AllParametersProps) => {
 
     return (
         <div>
-            <SelectEffect values={values} setValues={setValues} effects={effects} />
+            <GeneralSelect
+                label="Select effect"
+                values={values}
+                setValues={setValues}
+                options={effects}
+                paramType={ParamType.ActiveEffect}
+            />
             <ColorWheel values={values} setValues={setValues} className={classes.colorWheel} />
             {sliderParams.map((key) => (
                 <React.Fragment key={key}>
@@ -71,7 +76,13 @@ const AllParameters = (props: AllParametersProps) => {
                     </React.Fragment>
                 ))}
             {getActiveEffect()?.name === "Color palette" && (
-                <SelectPalette values={values} setValues={setValues} palettes={palettes} />
+                <GeneralSelect
+                    label="Select palette"
+                    values={values}
+                    setValues={setValues}
+                    options={palettes}
+                    paramType={ParamType.ActivePalette}
+                />
             )}
             <SyncWithSelect
                 values={values}

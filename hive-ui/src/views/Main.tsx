@@ -110,7 +110,10 @@ const Main = () => {
         document.title = "LED Control - " + (isConnected ? "Connected" : "Disconnected");
     }, [isConnected, webSocket]);
 
-    useEffect(setSocketEventListeners, []);
+    useEffect(() => {
+        setSocketEventListeners();
+        return webSocket.close;
+    }, []);
 
     return (
         <div className={classes.root}>
@@ -122,7 +125,6 @@ const Main = () => {
                     <Client
                         id={i}
                         socket={webSocket}
-                        isSocketOpen={isConnected}
                         isConnected={isConnected && Boolean(clients?.[i])}
                         effects={effects}
                         palettes={palettes}

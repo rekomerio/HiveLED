@@ -6,6 +6,7 @@ import { ParamPropsBase, Option, Param, ParamType } from "../../helpers/types";
 import ColorWheel from "./ColorWheel";
 import GeneralSelect from "./GeneralSelect";
 import AdvancedSettings from "./AdvancedSettings";
+import { CustomSlider } from "../interactions/Slider";
 
 export interface AllParametersProps extends ParamPropsBase {
     clientId: number;
@@ -45,7 +46,7 @@ const AllParameters = (props: AllParametersProps) => {
             {sliderParams.map((key) => (
                 <React.Fragment key={key}>
                     <Typography variant="subtitle2">{params[key].name}</Typography>
-                    <Slider
+                    <CustomSlider
                         onChange={(e, val) =>
                             setValues((state) => ({ ...state, [key]: val as number }))
                         }
@@ -63,7 +64,7 @@ const AllParameters = (props: AllParametersProps) => {
                 .map((key) => (
                     <React.Fragment key={key}>
                         <Typography variant="subtitle2">{customParams[key].name}</Typography>
-                        <Slider
+                        <CustomSlider
                             onChange={(e, val) =>
                                 setValues((state) => ({ ...state, [key]: val as number }))
                             }

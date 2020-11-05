@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import Paper from "@material-ui/core/Paper";
 import Box from "@material-ui/core/Box";
-import { Collapse, Fab, IconButton, makeStyles, Typography } from "@material-ui/core";
+import { Collapse, Fab, makeStyles, Typography } from "@material-ui/core";
 import { getDefaultValues } from "../helpers/parameters";
 import { constructMessage } from "../utils/message";
 import { Command, Option, ParamValue, Param, ParamType } from "../helpers/types";
@@ -15,7 +15,6 @@ import RefreshIcon from "@material-ui/icons/Refresh";
 export interface ClientProps {
     id: number;
     socket: WebSocket;
-    isSocketOpen: boolean;
     isConnected: boolean;
     effects: Option[];
     palettes: Option[];
@@ -37,7 +36,7 @@ const Client = (props: ClientProps) => {
     const [isExpanded, setIsExpanded] = useState<boolean>(false);
     const [values, setValues] = useState<ParamValue>(defaultValues);
     const previousValues = useRef<ParamValue>(defaultValues);
-    const { isConnected, isSocketOpen, id, socket, effects, palettes, customParams } = props;
+    const { isConnected, id, socket, effects, palettes, customParams } = props;
 
     const hasChanged = (key: string) => {
         return previousValues.current[key] !== values[key];
@@ -59,8 +58,12 @@ const Client = (props: ClientProps) => {
         setPowerState(values[ParamType.PowerState] ? 0 : 1);
     };
 
+    const update = () => {
+        if (isConnected) socket.send(constructMessage(Command.GetParams, id));
+    };
+
     useEffect(() => {
-        if (!isSocketOpen || !isConnected) return;
+        if (!isConnected) return;
         throttle(() => {
             getChangedValuesKeys().forEach((key) => {
                 setPreviousValue(key);
@@ -73,7 +76,7 @@ const Client = (props: ClientProps) => {
                 socket.send(message);
             });
         }, 20);
-    }, [values, isSocketOpen, id, socket]);
+    }, [values, id, socket]);
 
     useEffect(() => {
         if (Object.keys(props.params).length) {
@@ -83,12 +86,12 @@ const Client = (props: ClientProps) => {
     }, [props.params]);
 
     useEffect(() => {
-        if (isConnected && isSocketOpen) socket.send(constructMessage(Command.GetParams, id));
-    }, [isConnected, isSocketOpen, socket]);
+        if (isConnected) socket.send(constructMessage(Command.GetParams, id));
+    }, [isConnected, socket]);
 
-    const update = () => {
-        if (isConnected && isSocketOpen) socket.send(constructMessage(Command.GetParams, id));
-    };
+    useEffect(() => {
+        if (!isConnected) setIsExpanded(false);
+    }, [isConnected]);
 
     return (
         <Paper>

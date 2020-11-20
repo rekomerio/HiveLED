@@ -36,11 +36,19 @@ void MessageHandler::Handle(UDPMessage *message)
     if (param.syncWithId == clientId)
         param.syncWithId = 255; // Cant sync with itself
 
-    if (param.syncWithId != 0xFF && param.syncWithId < MAX_CLIENTS)
+    if (param.syncWithId != 255 && param.syncWithId < MAX_CLIENTS)
         Synchronize(param, helper, m_Params[param.syncWithId], m_Helpers[param.syncWithId]);
 
     message->brightness = param.powerState ? param.brightness : 0;
     message->requestNextFrameMs = param.nextFrameMs;
+
+    if (param.brightnessBreatheRate && param.brightnessBreatheScale && param.powerState)
+    {
+        message->brightness = beatsin8(
+            param.brightnessBreatheRate,
+            message->brightness - (uint8_t)(param.brightnessBreatheScale * ((float)message->brightness / 255.0f)),
+            message->brightness);
+    }
 
     if (param.hueRotationRate && (uint32_t)(millis() - helper.lastHueRotation) > 255U - param.hueRotationRate)
     {
@@ -51,12 +59,15 @@ void MessageHandler::Handle(UDPMessage *message)
     param.activePalette %= hiveColorPaletteCount;
     param.activeEffect %= effects.size();
 
+    // Exit old method and enter the new one if they have changed
     if (param.activeEffect != helper.previousEffect)
     {
+        effects[helper.previousEffect]->Exit(message->leds, param, helper);
         effects[param.activeEffect]->Enter(message->leds, param, helper);
         helper.previousEffect = param.activeEffect;
     }
 
+    // Save changes if there are some and last change has been done 30 seconds ago or more
     if (m_LastChangeAt[clientId] && (uint32_t)(millis() - m_LastChangeAt[clientId]) > 30000)
     {
         SaveChangesEEPROM(clientId);
@@ -68,10 +79,13 @@ void MessageHandler::Handle(UDPMessage *message)
 
 void MessageHandler::Synchronize(LEDParams &pSync, LEDHelpers &hSync, LEDParams &pWith, LEDHelpers hWith)
 {
-    hSync.palettePosition = hWith.palettePosition;
-    pSync.activePalette = pWith.activePalette;
-    pSync.activeEffect = pWith.activeEffect;
     pSync.brightness = pWith.brightness;
+    pSync.activeEffect = pWith.activeEffect;
+    pSync.activePalette = pWith.activePalette;
+    hSync.palettePosition = hWith.palettePosition;
+    pSync.hueRotationRate = pWith.hueRotationRate;
+    pSync.brightnessBreatheRate = pWith.brightnessBreatheRate;
+    pSync.brightnessBreatheScale = pWith.brightnessBreatheScale;
 }
 
 LEDParams *MessageHandler::GetParams(uint8_t clientId)
@@ -123,6 +137,10 @@ uint8_t &MessageHandler::GetParam(uint8_t clientId, Param param)
         return params->activePalette;
     case Param::POWER_STATE:
         return params->powerState;
+    case Param::BRIGHTNESS_BREATHE_RATE:
+        return params->brightnessBreatheRate;
+    case Param::BRIGHTNESS_BREATHE_SCALE:
+        return params->brightnessBreatheScale;
     }
 
     return fallback;

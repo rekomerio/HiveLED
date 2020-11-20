@@ -7,10 +7,6 @@ LEDEffect::LEDEffect()
     m_Index = instanceCounter++;
 }
 
-void Sinelon::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
-{
-}
-
 void Sinelon::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     fadeToBlackBy(leds, params.numLeds, 20);
@@ -18,18 +14,10 @@ void Sinelon::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
     leds[pos % params.numLeds] += CHSV(params.hue, params.saturation, params.value);
 }
 
-void Rainbow::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
-{
-}
-
 void Rainbow::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     fill_rainbow(leds, params.numLeds, helpers.palettePosition + params.paletteOffset, 7);
     helpers.palettePosition++;
-}
-
-void Bpm::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
-{
 }
 
 void Bpm::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
@@ -44,10 +32,6 @@ void Bpm::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
     }
 }
 
-void Juggle::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
-{
-}
-
 void Juggle::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     // eight colored dots, weaving in and out of sync with each other
@@ -58,10 +42,6 @@ void Juggle::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
         leds[beatsin16(i + 7, 0, params.numLeds - 1)] |= CHSV(dothue, 200, 255);
         dothue += 32;
     }
-}
-
-void ColorPalette::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
-{
 }
 
 void ColorPalette::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
@@ -91,17 +71,15 @@ void Confetti::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
     fadeToBlackBy(leds, params.numLeds, 5);
 }
 
-void SolidColor::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
-{
-}
-
 void SolidColor::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     fill_solid(leds, params.numLeds, CHSV(params.hue, params.saturation, params.value));
 }
 
-void Fire::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
+void SolidColor::Exit(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
+    params.brightnessBreatheRate = 0;
+    params.brightnessBreatheScale = 0;
 }
 
 void Fire::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)

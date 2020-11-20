@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Box, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
+import Box from "@material-ui/core/Box";
 import Client from "../components/Client";
 import { Command, Option, Param, ParamValue } from "../helpers/types";
 import {

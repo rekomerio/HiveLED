@@ -1,5 +1,6 @@
 import React from "react";
-import { Typography, Slider, makeStyles } from "@material-ui/core";
+import { makeStyles } from "@material-ui/core";
+import Typography from "@material-ui/core/Typography";
 import { sliderParams, params } from "../../helpers/parameters";
 import SyncWithSelect from "./SyncWithSelect";
 import { ParamPropsBase, Option, Param, ParamType } from "../../helpers/types";
@@ -30,7 +31,11 @@ const AllParameters = (props: AllParametersProps) => {
     };
 
     const isParamVisible = (key: string) => {
-        return customParams[key].effects.includes(getActiveEffect()?.name);
+        return (
+            Number.isInteger(values[key]) &&
+            (customParams[key].effects.includes(getActiveEffect()?.name) ||
+                customParams[key].effects.includes("All"))
+        );
     };
 
     return (

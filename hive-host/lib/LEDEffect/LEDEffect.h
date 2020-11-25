@@ -30,44 +30,66 @@ enum Param : uint8_t
 };
 
 /**
- * Name, min-max, names of effects that use the parameter
- * Leave the last field empty, if the parameter is already implemented in the UI
+ * Effects field is left empty, if the parameter is already implemented in the UI
  */
 struct LEDParams
 {
-    // Hue, 0-255
+    // @Name: Hue
+    // @Range: 0-255
     uint8_t hue = 100;
-    // Saturation, 0-255
+    // @Name: Saturation
+    // @Range: 0-255
     uint8_t saturation = 255;
-    // Value, 0-255
+    // @Name: Value
+    // @Range: 0-255
     uint8_t value = 255;
-    // Spawn rate, 0-255, ["Confetti"]
+    // @Name: Spawn rate
+    // @Range: 0-255
+    // @Effects: ["Confetti"]
     uint8_t spawnRate = 100;
-    // Brightness, 0-255
+    // @Name: Brightness
+    // @Range: 0-255
     uint8_t brightness = 100;
-    // Active effect, 0-255
+    // @Name: Active effect
+    // @Range: 0-255
     uint8_t activeEffect = 0;
-    // Next frame ms, 16-255
+    // @Name: Next frame ms
+    // @Range: 16-255
     uint8_t nextFrameMs = 16;
-    // Offset, 0-255, ["Color palette", "Sinelon", "Rainbow", "Bpm"]
+    // @Name: Offset
+    // @Range: 0-255
+    // @Effects: ["Color palette", "Sinelon", "Rainbow", "Bpm"]
     uint8_t offset = 0;
-    // Sync with id, 0-255
+    // @Name: Sync with id
+    // @Range: 0-255
     uint8_t syncWithId = 255;
-    // Num LED's, 0-150
+    // @Name: Num LED's
+    // @Range: 0-150
     uint8_t numLeds = 72;
-    // Hue rotation rate, 0-255
+    // @Name: Hue rotation rate
+    // @Range: 0-255
     uint8_t hueRotationRate = 0;
-    // Fire cooling, 20-100, ["Fire"]
+    // @Name: Fire cooling
+    // @Range: 20-100
+    // @Effects: ["Fire"]
     uint8_t fireCooling = 55;
-    // Fire sparking, 50-200, ["Fire"]
+    // @Name: Fire sparking
+    // @Range: 50-200
+    // @Effects: ["Fire"]
     uint8_t fireSparking = 120;
-    // Active palette, 0-255
+    // @Name: Active palette
+    // @Range: 0-255
     uint8_t activePalette = 0;
-    // Power state, 0-1
+    // @Name: Power state
+    // @Range: 0-1
     uint8_t powerState = 1;
-    // Brightness breathe rate, 0-250, ["Solid color"]
+    // @Name: Brightness breathe rate
+    // @Range: 0-250
+    // @Effects: ["Solid color"]
     uint8_t brightnessBreatheRate = 0;
-    // Brightness breathe scale, 0-255, ["Solid color"]
+    // @Name: Brightness breathe scale
+    // @Range: 0-255
+    // @Effects: ["Solid color"]
     uint8_t brightnessBreatheScale = 0;
 
     static constexpr uint8_t GetNumParams() { return Param::NUM_PARAMS; };

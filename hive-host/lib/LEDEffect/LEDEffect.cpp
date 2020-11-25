@@ -10,13 +10,13 @@ LEDEffect::LEDEffect()
 void Sinelon::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     fadeToBlackBy(leds, params.numLeds, 20);
-    int pos = beatsin16(13, 0, params.numLeds - 1) + params.paletteOffset;
+    int pos = beatsin16(13, 0, params.numLeds - 1) + params.offset;
     leds[pos % params.numLeds] += CHSV(params.hue, params.saturation, params.value);
 }
 
 void Rainbow::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
-    fill_rainbow(leds, params.numLeds, helpers.palettePosition + params.paletteOffset, 7);
+    fill_rainbow(leds, params.numLeds, helpers.palettePosition + params.offset, 7);
     helpers.palettePosition++;
 }
 
@@ -28,7 +28,7 @@ void Bpm::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
     uint8_t beat = beatsin8(BeatsPerMinute, 64, 255);
     for (int i = 0; i < params.numLeds; i++)
     {
-        leds[i] = ColorFromPalette(palette, params.hue + (i * 2), beat - params.paletteOffset + (i * 10));
+        leds[i] = ColorFromPalette(palette, params.hue + (i * 2), beat - params.offset + (i * 10));
     }
 }
 
@@ -49,7 +49,7 @@ void ColorPalette::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
     CRGBPalette16 palette = hiveColorPalettes[params.activePalette];
     for (uint16_t i = 0; i < params.numLeds; i++)
     {
-        leds[i] = ColorFromPalette(palette, helpers.palettePosition + params.paletteOffset + i);
+        leds[i] = ColorFromPalette(palette, helpers.palettePosition + params.offset + i);
     }
 
     helpers.palettePosition++;

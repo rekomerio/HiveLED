@@ -122,7 +122,7 @@ uint8_t &MessageHandler::GetParam(uint8_t clientId, Param param)
     case Param::NEXT_FRAME_MS:
         return params->nextFrameMs;
     case Param::PALETTE_OFFSET:
-        return params->paletteOffset;
+        return params->offset;
     case Param::SYNC_WITH_ID:
         return params->syncWithId;
     case Param::NUM_LEDS:

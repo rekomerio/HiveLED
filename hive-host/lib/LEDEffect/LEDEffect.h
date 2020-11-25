@@ -31,7 +31,7 @@ enum Param : uint8_t
 
 /**
  * Name, min-max, names of effects that use the parameter
- * Leave the last field empty, if the parameter is already implement in the UI
+ * Leave the last field empty, if the parameter is already implemented in the UI
  */
 struct LEDParams
 {
@@ -49,8 +49,8 @@ struct LEDParams
     uint8_t activeEffect = 0;
     // Next frame ms, 16-255
     uint8_t nextFrameMs = 16;
-    // Palette offset, 0-255
-    uint8_t paletteOffset = 0;
+    // Offset, 0-255, ["Color palette", "Sinelon", "Rainbow", "Bpm"]
+    uint8_t offset = 0;
     // Sync with id, 0-255
     uint8_t syncWithId = 255;
     // Num LED's, 0-150

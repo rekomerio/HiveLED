@@ -83,35 +83,6 @@ DEFINE_GRADIENT_PALETTE(bhw1_28_gp){
     232, 78, 12, 214,
     255, 0, 149, 242};
 
-// Gradient palette "bhw1_14_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_14.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 36 bytes of program space.
-
-DEFINE_GRADIENT_PALETTE(bhw1_14_gp){
-    0, 0, 0, 0,
-    12, 1, 1, 3,
-    53, 8, 1, 22,
-    80, 4, 6, 89,
-    119, 2, 25, 216,
-    145, 7, 10, 99,
-    186, 15, 2, 31,
-    233, 2, 1, 5,
-    255, 0, 0, 0};
-
-// Gradient palette "bhw1_22_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_22.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 24 bytes of program space.
-
-DEFINE_GRADIENT_PALETTE(bhw1_22_gp){
-    0, 1, 1, 1,
-    45, 30, 10, 1,
-    96, 60, 9, 1,
-    130, 197, 36, 12,
-    188, 30, 10, 1,
-    255, 1, 1, 1};
-
 // Gradient palette "bhw1_23_gp", originally from
 // http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw1/tn/bhw1_23.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
@@ -142,20 +113,6 @@ DEFINE_GRADIENT_PALETTE(bhw2_greenman_gp){
     0, 1, 22, 1,
     130, 1, 168, 2,
     255, 1, 22, 1};
-
-// Gradient palette "bhw2_57_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw2/tn/bhw2_57.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 28 bytes of program space.
-
-DEFINE_GRADIENT_PALETTE(bhw2_57_gp){
-    0, 0, 0, 0,
-    43, 14, 2, 5,
-    81, 40, 1, 7,
-    130, 182, 1, 1,
-    173, 40, 1, 7,
-    214, 14, 2, 5,
-    255, 0, 0, 0};
 
 // Gradient palette "bhw3_32_gp", originally from
 // http://soliton.vm.bytemark.co.uk/pub/cpt-city/bhw/bhw3/tn/bhw3_32.png.index.html
@@ -212,124 +169,113 @@ DEFINE_GRADIENT_PALETTE(velvet_ocean_gp){
     204, 1, 13, 10,
     255, 1, 13, 10};
 
-// Gradient palette "deeper_than_the_sea_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/colo/Skyblue2u/tn/deeper_than_the_sea.png.index.html
+// Gradient palette "Dusk_Finds_Us_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/jjg/ccolo/Skyblue2u/tn/Dusk_Finds_Us.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 40 bytes of program space.
+// Size: 44 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE(deeper_than_the_sea_gp){
-    0, 0, 7, 29,
-    51, 0, 7, 29,
-    51, 0, 5, 19,
-    102, 0, 5, 19,
-    102, 0, 3, 13,
-    153, 0, 3, 13,
-    153, 0, 1, 4,
-    204, 0, 1, 4,
-    204, 0, 1, 1,
-    255, 0, 1, 1};
+DEFINE_GRADIENT_PALETTE(Dusk_Finds_Us_gp){
+    0, 64, 66, 82,
+    66, 64, 66, 82,
+    132, 71, 55, 73,
+    137, 78, 47, 65,
+    142, 86, 40, 57,
+    147, 92, 32, 51,
+    153, 101, 25, 45,
+    161, 110, 19, 39,
+    170, 128, 10, 29,
+    212, 148, 4, 20,
+    255, 148, 4, 20};
 
-// Gradient palette "The_Calanques_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/colo/angelafaye/tn/The_Calanques.png.index.html
+// Gradient palette "mellon_ball_surprise_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/jjg/ccolo/Skyblue2u/tn/mellon_ball_surprise.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 40 bytes of program space.
+// Size: 44 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE(The_Calanques_gp){
-    0, 1, 6, 14,
-    145, 1, 6, 14,
-    145, 1, 42, 66,
-    160, 1, 42, 66,
-    160, 2, 73, 52,
-    173, 2, 73, 52,
-    173, 12, 95, 39,
-    188, 12, 95, 39,
-    188, 92, 156, 96,
-    255, 92, 156, 96};
+DEFINE_GRADIENT_PALETTE(mellon_ball_surprise_gp){
+    0, 152, 227, 85,
+    25, 152, 227, 85,
+    51, 182, 235, 95,
+    76, 215, 244, 106,
+    102, 234, 189, 79,
+    127, 255, 142, 56,
+    153, 255, 115, 51,
+    178, 255, 90, 45,
+    204, 242, 59, 52,
+    229, 229, 36, 62,
+    255, 229, 36, 62};
 
-// Gradient palette "natural_light_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/colo/alpen/tn/natural_light.png.index.html
+// Gradient palette "r_a_i_n_y_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/jjg/ccolo/hana/tn/r_a_i_n_y.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 40 bytes of program space.
+// Size: 44 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE(natural_light_gp){
-    0, 247, 35, 7,
-    89, 247, 35, 7,
-    89, 120, 6, 24,
-    99, 120, 6, 24,
-    99, 15, 1, 29,
-    119, 15, 1, 29,
-    119, 1, 1, 23,
-    173, 1, 1, 23,
-    173, 1, 1, 9,
-    255, 1, 1, 9};
+DEFINE_GRADIENT_PALETTE(r_a_i_n_y_gp){
+    0, 8, 1, 54,
+    25, 8, 1, 54,
+    51, 2, 9, 67,
+    76, 1, 33, 83,
+    102, 2, 55, 82,
+    127, 5, 84, 80,
+    153, 27, 99, 78,
+    178, 72, 117, 75,
+    204, 92, 124, 69,
+    229, 117, 130, 64,
+    255, 117, 130, 64};
 
-// Gradient palette "refuel_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/colo/alpen/tn/refuel.png.index.html
+// Gradient palette "October_Sky_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/jjg/ccolo/sugar/tn/October_Sky.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 40 bytes of program space.
+// Size: 44 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE(refuel_gp){
-    0, 2, 252, 88,
-    51, 2, 252, 88,
-    51, 2, 151, 80,
-    79, 2, 151, 80,
-    79, 3, 82, 69,
-    153, 3, 82, 69,
-    153, 20, 13, 21,
-    165, 20, 13, 21,
-    165, 5, 5, 9,
-    255, 5, 5, 9};
+DEFINE_GRADIENT_PALETTE(October_Sky_gp){
+    0, 42, 7, 11,
+    71, 42, 7, 11,
+    142, 75, 9, 12,
+    156, 121, 11, 14,
+    170, 153, 18, 12,
+    184, 192, 25, 11,
+    198, 213, 43, 8,
+    212, 232, 66, 5,
+    226, 229, 91, 7,
+    240, 227, 122, 9,
+    255, 227, 122, 9};
 
-// Gradient palette "Sleep_Deprevation_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/colo/vredeling/tn/Sleep_Deprevation.png.index.html
+// Gradient palette "Id_Like_To_Dive_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/jjg/ccolo/sugar/tn/Id_Like_To_Dive.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 40 bytes of program space.
+// Size: 44 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE(Sleep_Deprevation_gp){
-    0, 21, 3, 56,
-    51, 21, 3, 56,
-    51, 39, 21, 145,
-    102, 39, 21, 145,
-    102, 43, 47, 170,
-    153, 43, 47, 170,
-    153, 77, 105, 197,
-    204, 77, 105, 197,
-    204, 146, 184, 223,
-    255, 146, 184, 223};
+DEFINE_GRADIENT_PALETTE(Id_Like_To_Dive_gp){
+    0, 59, 125, 77,
+    20, 59, 125, 77,
+    40, 30, 104, 75,
+    75, 11, 85, 74,
+    109, 14, 55, 79,
+    117, 17, 33, 84,
+    124, 18, 17, 73,
+    141, 18, 6, 63,
+    158, 12, 2, 39,
+    206, 7, 1, 22,
+    255, 7, 1, 22};
 
-// Gradient palette "All_kinds_of_green_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/colo/smorin2002/tn/All_kinds_of_green.png.index.html
+// Gradient palette "Another_Earth_gp", originally from
+// http://soliton.vm.bytemark.co.uk/pub/cpt-city/jjg/ccolo/vredeling/tn/Another_Earth.png.index.html
 // converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 40 bytes of program space.
+// Size: 44 bytes of program space.
 
-DEFINE_GRADIENT_PALETTE(All_kinds_of_green_gp){
-    0, 203, 248, 95,
-    51, 203, 248, 95,
-    51, 135, 197, 78,
-    102, 135, 197, 78,
-    102, 78, 197, 49,
-    153, 78, 197, 49,
-    153, 39, 173, 52,
-    204, 39, 173, 52,
-    204, 21, 105, 36,
-    255, 21, 105, 36};
-
-// Gradient palette "To_My_1st_100_Loves_gp", originally from
-// http://soliton.vm.bytemark.co.uk/pub/cpt-city/colo/rphnick/tn/To_My_1st_100_Loves.png.index.html
-// converted for FastLED with gammas (2.6, 2.2, 2.5)
-// Size: 40 bytes of program space.
-
-DEFINE_GRADIENT_PALETTE(To_My_1st_100_Loves_gp){
-    0, 157, 8, 5,
-    51, 157, 8, 5,
-    51, 77, 4, 2,
-    102, 77, 4, 2,
-    102, 42, 1, 1,
-    153, 42, 1, 1,
-    153, 13, 1, 1,
-    204, 13, 1, 1,
-    204, 1, 1, 1,
-    255, 1, 1, 1};
+DEFINE_GRADIENT_PALETTE(Another_Earth_gp){
+    0, 73, 156, 1,
+    25, 73, 156, 1,
+    51, 53, 146, 3,
+    76, 37, 138, 11,
+    102, 24, 128, 23,
+    127, 14, 119, 42,
+    153, 7, 111, 69,
+    178, 3, 103, 103,
+    204, 1, 95, 145,
+    229, 1, 87, 197,
+    255, 1, 87, 197};
 
 // Remember to add palette to /data/json/palettes.json
 extern const TProgmemRGBGradientPalettePtr hiveColorPalettes[] = {
@@ -342,21 +288,17 @@ extern const TProgmemRGBGradientPalettePtr hiveColorPalettes[] = {
     bhw1_purplered_gp,
     wave_gp,
     bhw1_28_gp,
-    bhw1_14_gp,
-    bhw1_22_gp,
     bhw1_23_gp,
     bhw1_05_gp,
     bhw2_greenman_gp,
-    bhw2_57_gp,
     bhw3_32_gp,
     bhw3_07_gp,
     velvet_ocean_gp,
-    deeper_than_the_sea_gp,
-    The_Calanques_gp,
-    natural_light_gp,
-    refuel_gp,
-    Sleep_Deprevation_gp,
-    All_kinds_of_green_gp,
-    To_My_1st_100_Loves_gp};
+    Dusk_Finds_Us_gp,
+    mellon_ball_surprise_gp,
+    r_a_i_n_y_gp,
+    October_Sky_gp,
+    Id_Like_To_Dive_gp,
+    Another_Earth_gp};
 
 extern const uint8_t hiveColorPaletteCount = sizeof(hiveColorPalettes) / sizeof(TProgmemRGBGradientPalettePtr);

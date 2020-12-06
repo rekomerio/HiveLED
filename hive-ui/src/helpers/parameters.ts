@@ -24,14 +24,10 @@ export const params: Param = {
     [ParamType.NumLeds]: { name: "Num leds", min: 72, max: 72, default: 72 },
     [ParamType.HueRotationRate]: { name: "Hue rotation rate", min: 0, max: 255, default: 0 },
     [ParamType.ActivePalette]: { name: "Active palette", min: 0, max: 255, default: 0 },
-    [ParamType.PowerState]: { name: "Power state", min: 0, max: 1, default: 1 },
+    [ParamType.PowerState]: { name: "Power state", min: 0, max: 1, default: 0 },
 };
 
-export const sliderParams = [
-    ParamType.Brightness,
-    ParamType.HueRotationRate,
-    ParamType.NextFrameMs,
-];
+export const sliderParams = [ParamType.Brightness, ParamType.NextFrameMs];
 
 export const getDefaultValues = () =>
     Object.keys(params).reduce((acc, curr) => {

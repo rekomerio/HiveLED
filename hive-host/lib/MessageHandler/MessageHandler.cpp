@@ -9,13 +9,14 @@ MessageHandler::MessageHandler()
 
 void MessageHandler::Init()
 {
-    effects.push_back(new Confetti());
+    effects.push_back(new SolidColor());
+    effects.push_back(new ColorPalette());
+    effects.push_back(new NoisePalette());
     effects.push_back(new Rainbow());
+    effects.push_back(new Confetti());
     effects.push_back(new Sinelon());
     effects.push_back(new Bpm());
     effects.push_back(new Juggle());
-    effects.push_back(new ColorPalette());
-    effects.push_back(new SolidColor());
     effects.push_back(new Fire());
 
     memset(m_LastChangeAt.data(), 0, 4 * m_LastChangeAt.size());
@@ -41,14 +42,6 @@ void MessageHandler::Handle(UDPMessage *message)
 
     message->brightness = param.powerState ? param.brightness : 0;
     message->requestNextFrameMs = param.nextFrameMs;
-
-    if (param.brightnessBreatheRate && param.brightnessBreatheScale && param.powerState)
-    {
-        message->brightness = beatsin8(
-            param.brightnessBreatheRate,
-            message->brightness - (uint8_t)(param.brightnessBreatheScale * ((float)message->brightness / 255.0f)),
-            message->brightness);
-    }
 
     if (param.hueRotationRate && (uint32_t)(millis() - helper.lastHueRotation) > 255U - param.hueRotationRate)
     {
@@ -79,6 +72,7 @@ void MessageHandler::Handle(UDPMessage *message)
 
 void MessageHandler::Synchronize(LEDParams &pSync, LEDHelpers &hSync, LEDParams &pWith, LEDHelpers hWith)
 {
+    pSync.speed = pWith.speed;
     pSync.brightness = pWith.brightness;
     pSync.activeEffect = pWith.activeEffect;
     pSync.activePalette = pWith.activePalette;
@@ -141,6 +135,8 @@ uint8_t &MessageHandler::GetParam(uint8_t clientId, Param param)
         return params->brightnessBreatheRate;
     case Param::BRIGHTNESS_BREATHE_SCALE:
         return params->brightnessBreatheScale;
+    case Param::SPEED:
+        return params->speed;
     }
 
     return fallback;

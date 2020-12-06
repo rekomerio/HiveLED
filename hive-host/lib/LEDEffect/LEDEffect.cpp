@@ -55,6 +55,25 @@ void ColorPalette::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
     helpers.palettePosition++;
 }
 
+void NoisePalette::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
+{
+    CRGBPalette16 palette = hiveColorPalettes[params.activePalette];
+    for (uint16_t i = 0; i < params.numLeds; i++)
+    {
+        leds[i] = ColorFromPalette(
+            palette,
+            helpers.palettePosition + params.offset + i,
+            max(map(inoise8(i * params.numLeds, helpers.noiseOffset), 0, 255, -100, 255), 0L));
+    }
+
+    if (params.speed != 0 && (uint32_t)(millis() - helpers.lastUpdate) > max(255U - params.speed, 5U) * 5U)
+    {
+        helpers.palettePosition++;
+        helpers.lastUpdate = millis();
+    }
+    helpers.noiseOffset += 2;
+}
+
 void Confetti::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     fill_solid(leds, params.numLeds, CRGB::Black);
@@ -73,13 +92,17 @@ void Confetti::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 
 void SolidColor::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
-    fill_solid(leds, params.numLeds, CHSV(params.hue, params.saturation, params.value));
-}
+    uint8_t value = params.value;
 
-void SolidColor::Exit(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
-{
-    params.brightnessBreatheRate = 0;
-    params.brightnessBreatheScale = 0;
+    if (params.brightnessBreatheRate && params.brightnessBreatheScale && params.powerState)
+    {
+        value = beatsin8(
+            params.brightnessBreatheRate,
+            value - (uint8_t)(params.brightnessBreatheScale * ((float)value / 255.0f)),
+            value);
+    }
+
+    fill_solid(leds, params.numLeds, CHSV(params.hue, params.saturation, value));
 }
 
 void Fire::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)

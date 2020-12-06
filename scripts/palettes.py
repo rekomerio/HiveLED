@@ -5,6 +5,7 @@ with open("../hive-host/lib/LEDEffect/ColorPalettes.cpp", 'r') as f:
     isInPaletteList = False
     foundPalettes = []
     usedPalettes = []
+    jsonObject = ""
     for line in f:
         line = line.strip()
 

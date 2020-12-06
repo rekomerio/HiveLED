@@ -44,8 +44,8 @@ void WebSocketServer::OnWebSocketEvent(uint8_t connection, WStype_t type, uint8_
         }
         break;
     case WStype_BIN:
-        for (size_t i = 0; i < length; i++)
-            Serial.println(payload[i]);
+        // for (size_t i = 0; i < length; i++)
+        //     Serial.println(payload[i]);
 
         HandleBinaryMessage(connection, payload, length);
         break;
@@ -59,10 +59,10 @@ void WebSocketServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, 
     uint8_t param = payload[2];
     uint16_t value = payload[4] << 8 | payload[3];
 
-    Serial.printf("command %d\n", command);
-    Serial.printf("client %d\n", clientId);
-    Serial.printf("param %d\n", param);
-    Serial.printf("value %d\n", value);
+    // Serial.printf("command %d\n", command);
+    // Serial.printf("client %d\n", clientId);
+    // Serial.printf("param %d\n", param);
+    // Serial.printf("value %d\n", value);
 
     switch (command)
     {

@@ -25,6 +25,7 @@ enum Param : uint8_t
     POWER_STATE,
     BRIGHTNESS_BREATHE_RATE,
     BRIGHTNESS_BREATHE_SCALE,
+    SPEED,
 
     NUM_PARAMS,
 };
@@ -58,7 +59,7 @@ struct LEDParams
     uint8_t nextFrameMs = 16;
     // @Name: Offset
     // @Range: 0-255
-    // @Effects: ["Color palette", "Sinelon", "Rainbow", "Bpm"]
+    // @Effects: ["Color palette", "Sinelon", "Rainbow", "Bpm", "Noise palette"]
     uint8_t offset = 0;
     // @Name: Sync with id
     // @Range: 0-255
@@ -68,6 +69,7 @@ struct LEDParams
     uint8_t numLeds = 72;
     // @Name: Hue rotation rate
     // @Range: 0-255
+    // @Effects: ["Solid color", "Confetti", "Fire", "Bpm", "Sinelon"]
     uint8_t hueRotationRate = 0;
     // @Name: Fire cooling
     // @Range: 20-100
@@ -91,6 +93,10 @@ struct LEDParams
     // @Range: 0-255
     // @Effects: ["Solid color"]
     uint8_t brightnessBreatheScale = 0;
+    // @Name: Speed
+    // @Range: 0-255
+    // @Effects: ["Noise palette"]
+    uint8_t speed = 0;
 
     static constexpr uint8_t GetNumParams() { return Param::NUM_PARAMS; };
 };
@@ -101,6 +107,7 @@ struct LEDHelpers
     uint16_t palettePosition = 0;
     uint32_t lastUpdate = 0;
     uint32_t lastHueRotation = 0;
+    uint16_t noiseOffset = 0;
 
     uint8_t heat[MAX_LEDS];
 };
@@ -144,21 +151,13 @@ public:
     const char *GetName() override { return "Confetti"; }
 };
 
-class SolidColor : public LEDEffect
-{
-    using LEDEffect::LEDEffect;
-
-public:
-    void Exit(CRGB *leds, LEDParams &params, LEDHelpers &helpers) override;
-    void Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers) override;
-    const char *GetName() override { return "Solid color"; }
-};
-
+DEFINE_EFFECT(SolidColor, "Solid color");
 DEFINE_EFFECT(Rainbow, "Rainbow");
 DEFINE_EFFECT(Sinelon, "Sinelon");
 DEFINE_EFFECT(Bpm, "Bpm");
 DEFINE_EFFECT(Juggle, "Juggle");
 DEFINE_EFFECT(ColorPalette, "Color palette");
+DEFINE_EFFECT(NoisePalette, "Noise palette");
 DEFINE_EFFECT(Fire, "Fire");
 
 extern const TProgmemRGBGradientPalettePtr hiveColorPalettes[];

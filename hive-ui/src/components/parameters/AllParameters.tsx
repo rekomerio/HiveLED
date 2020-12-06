@@ -82,7 +82,7 @@ const AllParameters = (props: AllParametersProps) => {
                         />
                     </React.Fragment>
                 ))}
-            {getActiveEffect()?.name === "Color palette" && (
+            {getActiveEffect()?.name.includes("palette") && (
                 <GeneralSelect
                     label="Select palette"
                     values={values}

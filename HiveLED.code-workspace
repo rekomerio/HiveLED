@@ -11,6 +11,9 @@
         },
         {
             "path": "hive-ui"
+        },
+        {
+            "path": "scripts"
         }
     ],
     "settings": {

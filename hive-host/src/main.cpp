@@ -8,6 +8,8 @@
 #include "MessageHandler.h"
 #include "../../common/shared.h"
 
+#define CONNECT_TO_WIFI 0
+
 UDPHost host;
 WebSocketServer *wsServer;
 HttpServer *httpServer;
@@ -17,6 +19,7 @@ void setup()
 	Serial.begin(115200);
 	pinMode(LED_BUILTIN, OUTPUT);
 
+#if CONNECT_TO_WIFI
 	WiFi.mode(WIFI_AP_STA);
 	WiFi.begin(wifiSsid, wifiPass);
 
@@ -29,13 +32,19 @@ void setup()
 
 		statusLedState = !statusLedState;
 	}
+#else
+	WiFi.mode(WIFI_AP);
+#endif
 
 	digitalWrite(LED_BUILTIN, 1);
 
 	WiFi.softAP(apSsid, apPass, 1, 0, MAX_CLIENTS);
 
 	Serial.println(WiFi.softAPIP());
+
+#if CONNECT_TO_WIFI
 	Serial.println(WiFi.localIP());
+#endif
 
 	messageHandler.clients = host.clients.data();
 

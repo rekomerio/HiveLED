@@ -5,7 +5,7 @@
 #include "HiveClient.h"
 #include "../../common/shared.h"
 
-#define NETWORK_ID 1
+#define NETWORK_ID 0
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
 #define DATA_PIN D6
@@ -44,12 +44,12 @@ void setup()
 	{
 		digitalWrite(LED_BUILTIN, statusLedState);
 		Serial.print(".");
-		delay(250);
+		delay(500);
 
 		statusLedState = !statusLedState;
 	}
 
-	digitalWrite(LED_BUILTIN, 0);
+	digitalWrite(LED_BUILTIN, 1);
 	Serial.print("Connected, IP address: ");
 	Serial.println(WiFi.localIP());
 

@@ -12,6 +12,10 @@
 // Connect to access point shared by host = 1; Connect to WiFi network = 0
 #define HOST_AP 1
 
+#if NETWORK_ID >= MAX_CLIENTS
+#error NETWORK_ID must be smaller.
+#endif
+
 uint32_t disconnectedAt = 0;
 
 #if HOST_AP

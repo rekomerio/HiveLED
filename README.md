@@ -8,16 +8,13 @@ Overall this will make synchronization of multiple strips much more easier and a
 ## Tools
 This project uses PlatformIO for building and uploading the code. I recommend getting VS Code and PlatformIO plugin if you want to use the code.
 
-## TODO
-- [ ] Add master client to UI to control all clients
-- [ ] Add palettes and a way to request all palette names
-- [ ] Add customizable timed events for all clients
-- [ ] Add more effects
-- [ ] Create method to discover host ip in local network
-- [ ] Add physical button to host to toggle all client LED's on and off
-- [ ] Add static IP to host and make client choose which access point to use based on signal strength
-
 ## React UI into SPIFFS
  - Build React app with npm run build
  - Copy the build folder contents into hive-host/data 
  - Run command pio run -t uploadfs
+ 
+ ## Screenshots
+ 
+![](https://raw.githubusercontent.com/rekomerio/HiveLED/main/hive-ui/screenshots/2.png)
+![](https://raw.githubusercontent.com/rekomerio/HiveLED/main/hive-ui/screenshots/1.png)
+![](https://raw.githubusercontent.com/rekomerio/HiveLED/main/hive-ui/screenshots/3.png)

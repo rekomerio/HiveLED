@@ -11,8 +11,19 @@ This project uses PlatformIO for building and uploading the code. I recommend ge
 ## React UI into SPIFFS
  - Build React app with npm run build
  - Copy the build folder contents into hive-host/data 
- - Run command pio run -t uploadfs
- 
+ - Run command ``pio run -t uploadfs``
+
+ ## Notes
+ - If you are connecting the host to WiFi with low signal, there is likely going to be a lot of visible lag so consider where you place it.
+ - shared.h file must be manually added to common folder. It is hidden as it contains private WiFi passwords. Template for the file below.
+
+ ```
+extern const char *apSsid = "UDP_host";
+extern const char *apPass = "topsecret343";
+
+extern const char *wifiSsid = "SSID here";
+extern const char *wifiPass = "Password here";
+```
  ## Screenshots
  
 ![](https://raw.githubusercontent.com/rekomerio/HiveLED/main/hive-ui/screenshots/2.png)

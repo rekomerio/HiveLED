@@ -70,7 +70,7 @@ void WebSocketServer::HandleBinaryMessage(uint8_t connection, uint8_t *payload, 
         messageHandler.SetParam(clientId, (Param)param, value);
         break;
     case Command::GET_PARAM_VALUE:
-        ws.sendBIN(connection, (uint8_t *)&messageHandler.GetParam(clientId, (Param)param), 2);
+        ws.sendBIN(connection, (uint8_t *)&messageHandler.GetParam(clientId, (Param)param), 1);
         break;
     case Command::GET_EFFECTS:
         ws.sendTXT(connection, messageHandler.GetEffectsJSON());

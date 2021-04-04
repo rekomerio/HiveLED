@@ -8,7 +8,7 @@
 #include "MessageHandler.h"
 #include "../../common/shared.h"
 
-#define CONNECT_TO_WIFI 0
+#define CONNECT_TO_WIFI 1
 
 UDPHost host;
 WebSocketServer *wsServer;
@@ -55,7 +55,6 @@ void setup()
 
 	httpServer = HttpServer::GetInstance();
 	httpServer->Init();
-
 	// When adding new parameters, comment this line and boot the device once and change some params so they get set correctly in memory
 	messageHandler.ReadSettingsEEPROM();
 }
@@ -64,13 +63,11 @@ void loop()
 {
 	host.ReadMessage();
 	UDPMessage *message = host.PeekMessage();
-
 	if (message)
 	{
 		messageHandler.Handle(message);
 		host.SendMessage(message, host.clients[message->clientId]);
 	}
-
 	wsServer->Update();
 	httpServer->Update();
 }

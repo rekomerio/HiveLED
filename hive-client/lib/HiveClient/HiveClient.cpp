@@ -60,7 +60,7 @@ int HiveClient::RequestFrame()
 
 int HiveClient::KeepAlive()
 {
-    if (ElapsedSinceLastSent() < 100)
+    if (ElapsedSinceLastSent() < 50)
         return 0;
 
     return SendPing();
@@ -83,6 +83,8 @@ int HiveClient::SendPing()
     }
     return 0;
 }
+
+uint32_t lastT = 0;
 
 void HiveClient::Loop()
 {

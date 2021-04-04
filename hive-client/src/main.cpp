@@ -13,7 +13,7 @@
 #define HOST_AP 1
 
 #if NETWORK_ID >= MAX_CLIENTS
-#error NETWORK_ID must be smaller.
+#error NETWORK_ID must be smaller than MAX_CLIENTS.
 #endif
 
 uint32_t disconnectedAt = 0;
@@ -68,13 +68,11 @@ void loop()
 	if (disconnectedAt == 0 && !isConnected)
 	{
 		disconnectedAt = millis();
-		digitalWrite(LED_BUILTIN, 1);
 	}
 
 	if (disconnectedAt != 0 && isConnected)
 	{
 		disconnectedAt = 0;
-		digitalWrite(LED_BUILTIN, 0);
 	}
 
 	if (disconnectedAt && (uint32_t)(millis() - disconnectedAt) > 2500)

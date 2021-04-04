@@ -16,7 +16,7 @@ void UDPHost::Init()
         Serial.println("UDP setup unsuccessful");
         delay(250);
     }
-
+    delay(256); // Delay so clients cant be seen as connected
     Serial.println("UDP setup successful");
 }
 
@@ -50,10 +50,9 @@ UDPMessage *UDPHost::ReadMessage()
 
         if (nBytesRead)
         {
-            if (clientId < clients.size())
+            if (clientId < clients.size() || !ip.v4())
             {
                 //Serial.printf("Message received from %d, elapsed: %d\n", clientId, millis() - clients[clientId].lastReceived);
-
                 clients[clientId].lastReceived = millis();
                 clients[clientId].ip = ip;
                 m_LastClient = &clients[clientId];
@@ -61,7 +60,7 @@ UDPMessage *UDPHost::ReadMessage()
             }
             else
             {
-                Serial.println("Invalid id");
+                Serial.printf("Invalid message from id: %d\n", clientId);
                 m_LastClient = nullptr;
             }
         }

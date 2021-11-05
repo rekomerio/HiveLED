@@ -2,19 +2,20 @@
 "0": {"name": "Hue", "min": 0, "max": 255, "effects": "[]"},
 "1": {"name": "Saturation", "min": 0, "max": 255, "effects": "[]"},
 "2": {"name": "Value", "min": 0, "max": 255, "effects": "[]"},
-"3": {"name": "Spawn rate", "min": 0, "max": 255, "effects": "[\"Confetti\"]"},
+"3": {"name": "Spawn rate", "min": 0, "max": 255, "effects": "[\"Confetti\", \"Droplets\"]"},
 "4": {"name": "Brightness", "min": 0, "max": 255, "effects": "[]"},
 "5": {"name": "Active effect", "min": 0, "max": 255, "effects": "[]"},
 "6": {"name": "Next frame ms", "min": 16, "max": 255, "effects": "[]"},
 "7": {"name": "Offset", "min": 0, "max": 255, "effects": "[\"Color palette\", \"Sinelon\", \"Rainbow\", \"Bpm\", \"Noise palette\"]"},
 "8": {"name": "Sync with id", "min": 0, "max": 255, "effects": "[]"},
 "9": {"name": "Num LED's", "min": 0, "max": 150, "effects": "[]"},
-"10": {"name": "Hue rotation rate", "min": 0, "max": 255, "effects": "[\"Solid color\", \"Confetti\", \"Fire\", \"Bpm\", \"Sinelon\"]"},
+"10": {"name": "Hue rotation rate", "min": 0, "max": 255, "effects": "[\"Solid color\", \"Confetti\", \"Fire\", \"Bpm\", \"Sinelon\", \"Droplets\"]"},
 "11": {"name": "Fire cooling", "min": 20, "max": 100, "effects": "[\"Fire\"]"},
 "12": {"name": "Fire sparking", "min": 50, "max": 200, "effects": "[\"Fire\"]"},
 "13": {"name": "Active palette", "min": 0, "max": 255, "effects": "[]"},
 "14": {"name": "Power state", "min": 0, "max": 1, "effects": "[]"},
 "15": {"name": "Brightness breathe rate", "min": 0, "max": 250, "effects": "[\"Solid color\"]"},
 "16": {"name": "Brightness breathe scale", "min": 0, "max": 255, "effects": "[\"Solid color\"]"},
-"17": {"name": "Speed", "min": 0, "max": 255, "effects": "[\"Noise palette\"]"}
+"17": {"name": "Speed", "min": 0, "max": 255, "effects": "[\"Noise palette\"]"},
+"18": {"name": "Acceleration", "min": 40, "max": 255, "effects": "[\"Droplets\"]"}
 }

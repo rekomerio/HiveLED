@@ -1,21 +1,20 @@
 import os
 import shutil
+from pathlib import Path
+import palettes
+import params
 
-def recursive_copy(src, dest):
-    """
-    Copy each file from src dir to dest dir, including sub-directories.
-    """
-    for item in os.listdir(src):
-        file_path = os.path.join(src, item)
+dst = "../hive-host/data"
 
-        # if item is a file, copy it
-        if os.path.isfile(file_path):
-            shutil.copy(file_path, dest)
+params.parseAndWriteParams()
+palettes.parseAndWritePalettes()
 
-        # else if item is a folder, recurse 
-        elif os.path.isdir(file_path):
-            new_dest = os.path.join(dest, item)
-            os.mkdir(new_dest)
-            recursive_copy(file_path, new_dest)
+Path(dst + "/json").mkdir(parents=True, exist_ok=True)
 
-recursive_copy("../hive-ui/build", "./test")
+shutil.copytree("../hive-ui/build", dst, dirs_exist_ok=True)
+shutil.copyfile("./palettes.json", dst + "/json/palettes.json")
+shutil.copyfile("./params.json", dst + "/json/params.json")
+
+print(os.listdir(dst))
+
+print("done!")

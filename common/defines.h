@@ -3,4 +3,6 @@
 #define PING_INTERVAL 1000
 #define MAX_CLIENTS 4
 
-#define MAX_LEDS 100
+#define MAX_LEDS 150
+
+#define EEPROM_SIZE_BYTES 512

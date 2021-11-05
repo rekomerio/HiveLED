@@ -23,7 +23,7 @@ void Rainbow::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 void Bpm::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
 {
     // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
-    uint8_t BeatsPerMinute = 62;
+    const uint8_t BeatsPerMinute = 62;
     CRGBPalette16 palette = PartyColors_p;
     uint8_t beat = beatsin8(BeatsPerMinute, 64, 255);
     for (int i = 0; i < params.numLeds; i++)
@@ -147,5 +147,54 @@ void Fire::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
             pixelNumber = j;
 
         leds[pixelNumber] = color;
+    }
+}
+
+void Droplets::Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
+{
+    fill_solid(leds, params.numLeds, CRGB::Black);
+    
+    for (uint8_t i = 0; i < helpers.particles.size(); i++)
+    {
+        helpers.particles[i].isAlive = false;
+    }
+}
+
+void Droplets::Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers)
+{
+    fadeToBlackBy(leds, params.numLeds, 160);
+
+    // 65000 >> 32000 >> 16000 >> 8000
+    bool spawnDroplet = (random16() >> 3) < params.spawnRate;
+
+    for (uint8_t i = 0; i < helpers.particles.size(); i++)
+    {
+        Particle& particle = helpers.particles[i];
+
+        if (!particle.isAlive && spawnDroplet)
+        {
+            spawnDroplet = false;
+            particle.isAlive = true;
+            particle.position = 0.0f;
+            particle.velocity = 0.005f + (float)((random8() >> 2)) * 0.01f;
+            // Add slight offset of hue to get more colorful droplets. Offset having value between 0 - 16
+            particle.hue = random8() & 0xf;
+        }
+
+        if (particle.isAlive)
+        {
+            // Magic number
+            particle.velocity += params.acceleration * 0.00005f; // TODO: Could account for framerate
+            particle.position += particle.velocity;
+            
+            if (particle.position > params.numLeds)
+            {
+                particle.isAlive = false;
+            } 
+            else
+            {
+                leds[params.numLeds - 1 - static_cast<uint8_t>(particle.position)] = CHSV(params.hue + particle.hue, params.saturation, params.value);
+            }
+        }
     }
 }

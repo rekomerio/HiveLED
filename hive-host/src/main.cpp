@@ -14,10 +14,21 @@ UDPHost host;
 WebSocketServer *wsServer;
 HttpServer *httpServer;
 
+
+struct {
+	char ssid[64];
+	char password[64];
+} wifiOpts;
+
 void setup()
 {
 	Serial.begin(115200);
 	pinMode(LED_BUILTIN, OUTPUT);
+	
+	// Init first to initialize EEPROM 
+	messageHandler.Init();
+
+	// EEPROM.get(EEPROM_SIZE_BYTES - 1 - sizeof(wifiOpts), wifiOpts);
 
 #if CONNECT_TO_WIFI
 	WiFi.mode(WIFI_AP_STA);
@@ -49,13 +60,11 @@ void setup()
 	messageHandler.clients = host.clients.data();
 
 	host.Init();
-	messageHandler.Init();
 	wsServer = WebSocketServer::GetInstance();
 	wsServer->Init();
 
 	httpServer = HttpServer::GetInstance();
 	httpServer->Init();
-	// When adding new parameters, comment this line and boot the device once and change some params so they get set correctly in memory
 	messageHandler.ReadSettingsEEPROM();
 }
 

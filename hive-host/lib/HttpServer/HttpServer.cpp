@@ -27,6 +27,13 @@ void HttpServer::Init()
     }
 
     server.serveStatic("/", SPIFFS, "/index.html", "max-age=86400");
+
+    server.on("/api/clients", [this]() {
+        static char msg[1] = { static_cast<char>(MAX_CLIENTS) + '0' };
+        server.sendHeader("Access-Control-Allow-Origin", "*");
+        server.send(200, "text/plain", msg); 
+    });
+    
     server.onNotFound([this]() {
         if (!m_HandleFileRead(server.uri()))
             server.send(404, "text/plain", "FileNotFound");

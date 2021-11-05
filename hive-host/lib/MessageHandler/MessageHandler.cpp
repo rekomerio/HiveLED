@@ -18,10 +18,11 @@ void MessageHandler::Init()
     effects.push_back(new Bpm());
     effects.push_back(new Juggle());
     effects.push_back(new Fire());
+    effects.push_back(new Droplets());
 
-    memset(m_LastChangeAt.data(), 0, 4 * m_LastChangeAt.size());
+    memset(m_LastChangeAt.data(), 0, sizeof(uint32_t) * m_LastChangeAt.size());
 
-    EEPROM.begin(512);
+    EEPROM.begin(EEPROM_SIZE_BYTES);
 }
 
 void MessageHandler::Handle(UDPMessage *message)
@@ -137,6 +138,8 @@ uint8_t &MessageHandler::GetParam(uint8_t clientId, Param param)
         return params->brightnessBreatheScale;
     case Param::SPEED:
         return params->speed;
+    case Param::ACCELERATION:
+        return params->acceleration;
     }
 
     return fallback;

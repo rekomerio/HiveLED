@@ -5,7 +5,7 @@
 #include "HiveClient.h"
 #include "../../common/shared.h"
 
-#define NETWORK_ID 0
+#define NETWORK_ID 2
 #define LED_TYPE WS2812B
 #define COLOR_ORDER GRB
 #define DATA_PIN D6
@@ -21,7 +21,7 @@ uint32_t disconnectedAt = 0;
 #if HOST_AP
 HiveClient client = HiveClient(NETWORK_ID, IPAddress(192, 168, 4, 1));
 #else
-HiveClient client = HiveClient(NETWORK_ID, IPAddress(192, 168, 1, 200));
+HiveClient client = HiveClient(NETWORK_ID, IPAddress(192, 168, 8, 200));
 #endif
 
 void setup()

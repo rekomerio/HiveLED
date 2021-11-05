@@ -2,6 +2,7 @@
 #define HTTPSERVER_H
 
 #include <ESP8266WebServer.h>
+#include "../../../common/defines.h"
 
 class HttpServer
 {

@@ -26,6 +26,7 @@ enum Param : uint8_t
     BRIGHTNESS_BREATHE_RATE,
     BRIGHTNESS_BREATHE_SCALE,
     SPEED,
+    ACCELERATION,
 
     NUM_PARAMS,
 };
@@ -46,7 +47,7 @@ struct LEDParams
     uint8_t value = 255;
     // @Name: Spawn rate
     // @Range: 0-255
-    // @Effects: ["Confetti"]
+    // @Effects: ["Confetti", "Droplets"]
     uint8_t spawnRate = 100;
     // @Name: Brightness
     // @Range: 0-255
@@ -69,7 +70,7 @@ struct LEDParams
     uint8_t numLeds = 72;
     // @Name: Hue rotation rate
     // @Range: 0-255
-    // @Effects: ["Solid color", "Confetti", "Fire", "Bpm", "Sinelon"]
+    // @Effects: ["Solid color", "Confetti", "Fire", "Bpm", "Sinelon", "Droplets"]
     uint8_t hueRotationRate = 0;
     // @Name: Fire cooling
     // @Range: 20-100
@@ -97,8 +98,20 @@ struct LEDParams
     // @Range: 0-255
     // @Effects: ["Noise palette"]
     uint8_t speed = 0;
+    // @Name: Acceleration
+    // @Range: 40-255
+    // @Effects: ["Droplets"]
+    uint8_t acceleration = 0;
 
     static constexpr uint8_t GetNumParams() { return Param::NUM_PARAMS; };
+};
+
+struct Particle
+{
+    float position = 0.0f;
+    float velocity = 0.0f;
+    bool isAlive = false;
+    uint8_t hue = 0;
 };
 
 struct LEDHelpers
@@ -110,6 +123,7 @@ struct LEDHelpers
     uint16_t noiseOffset = 0;
 
     uint8_t heat[MAX_LEDS];
+    std::array<Particle, 50> particles;
 };
 
 class LEDEffect
@@ -149,6 +163,16 @@ public:
     void Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers) override;
     void Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers) override;
     const char *GetName() override { return "Confetti"; }
+};
+
+class Droplets : public LEDEffect
+{
+    using LEDEffect::LEDEffect;
+
+public:
+    void Enter(CRGB *leds, LEDParams &params, LEDHelpers &helpers) override;
+    void Update(CRGB *leds, LEDParams &params, LEDHelpers &helpers) override;
+    const char *GetName() override { return "Droplets"; }
 };
 
 DEFINE_EFFECT(SolidColor, "Solid color");
